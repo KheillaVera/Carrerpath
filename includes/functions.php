@@ -1,10 +1,24 @@
-// Example logic to match interests to a Pathway
-function matchCareer($topInterest) {
-    $map = [
-        "Artistic" => "Languages & Arts",
-        "Investigative" => "MPC or MCB",
-        "Social" => "Humanities (HEG)",
-        "Realistic" => "TVET / Engineering"
+<?php
+// includes/functions.php
+
+function getRecommendations($db, $interest) {
+    // Map RIASEC interests to our database pathways
+    $interestMap = [
+        "Realistic" => 1,      // Sciences/TVET
+        "Investigative" => 1,  // Sciences
+        "Artistic" => 3,       // Languages
+        "Social" => 2,         // Humanities
+        "Enterprising" => 2,   // Humanities/Business
+        "Conventional" => 1    // Sciences/Finance
     ];
-    return $map[$topInterest] ?? "General Education";
+
+    $pathwayId = $interestMap[$interest] ?? 1;
+
+    // Fetch careers from the DB based on the pathway
+    $query = "SELECT * FROM careers WHERE pathway_id = ?";
+    $stmt = $db->prepare($query);
+    $stmt->execute([$pathwayId]);
+    
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+?>
