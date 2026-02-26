@@ -1,6 +1,6 @@
 <div class="glass-card">
     <h1>Find Your Future 🇷🇼</h1>
-    <p>Swipe through your hobbies to see your A-Level pathway.</p>
+    <p>Swipe all through your hobbies to see your A-Level pathway.</p>
     
     <div id="quiz-container">
         <button onclick="startQuiz()" class="btn-primary">Start Assessment</button>
