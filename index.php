@@ -1,46 +1,19 @@
-<?php 
-include('includes/db_connect.php'); 
-include('includes/functions.php'); 
-?>
+<?php include('includes/db_connect.php'); ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark" data-palette="blue">
 <head>
     <link rel="stylesheet" href="assets/style.css">
-    <title>CareerPath| Find Your Pathway</title>
 </head>
 <body>
+    <div class="app-chrome">
+        <?php include('includes/header.php'); ?>
 
-    <?php include('includes/header.php'); ?>
-
-    <main class="app-container" style="display:flex; justify-content:center; align-items:center; min-height:80vh;">
-        <div class="glass-card">
-            <h1>Find Your Future 🇷🇼</h1>
-            <p>Swipe through your hobbies to see your A-Level pathway.</p>
-            
-            <div id="quiz-container">
-                <button onclick="startQuiz()" class="btn-primary" style="background:var(--primary); padding:15px 30px; border:none; border-radius:10px; color:white; font-weight:bold; cursor:pointer;">
-                    Start Assessment
-                </button>
+        <div class="screens">
             </div>
-        </div>
-    </main>
-    <div id="save-overlay" class="overlay" style="display:none;">
-    <div class="glass-card popup">
-        <h2>Save Your Path 🚀</h2>
-        <p>Enter your email to get your CareerPulse roadmap.</p>
-        <input type="email" id="user-email" placeholder="e.g. vera@example.rw" class="input-glass">
-        <div id="save-status"></div>
-        <div class="modal-buttons">
-            <button onclick="closeSaveModal()" class="btn-secondary">Maybe Later</button>
-            <button onclick="submitSave()" id="btn-submit-save" class="btn-primary">Save Now</button>
-        </div>
-    </div>
-</div>
 
-    <footer class="main-footer">
-        <p>&copy; 2026 CareerPath Rwanda. Built with faith and code.</p>
-        <p><small>"Commit to the Lord whatever you do, and he will establish your plans." — Proverbs 16:3</small></p>
-    </footer>
+        <div class="bottom-nav">
+             </div>
+    </div>
 
     <script src="assets/index.js"></script>
 </body>
