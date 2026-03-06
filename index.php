@@ -24,6 +24,18 @@ include('includes/functions.php');
             </div>
         </div>
     </main>
+    <div id="save-overlay" class="overlay" style="display:none;">
+    <div class="glass-card popup">
+        <h2>Save Your Path 🚀</h2>
+        <p>Enter your email to get your CareerPulse roadmap.</p>
+        <input type="email" id="user-email" placeholder="e.g. vera@example.rw" class="input-glass">
+        <div id="save-status"></div>
+        <div class="modal-buttons">
+            <button onclick="closeSaveModal()" class="btn-secondary">Maybe Later</button>
+            <button onclick="submitSave()" id="btn-submit-save" class="btn-primary">Save Now</button>
+        </div>
+    </div>
+</div>
 
     <footer class="main-footer">
         <p>&copy; 2026 CareerPath Rwanda. Built with faith and code.</p>
