@@ -1,80 +1,86 @@
 // Sample hobbies based on RIASEC categories
-const hobbies = [
-    { text: "Building electronics or fixing machines", category: "Realistic" },
-    { text: "Solving complex math puzzles", category: "Investigative" },
-    { text: "Drawing, painting, or digital design", category: "Artistic" },
-    { text: "Helping friends solve their problems", category: "Social" },
-    { text: "Starting a small business or leading a team", category: "Enterprising" },
-    { text: "Organizing files and data accurately", category: "Conventional" }
-];
+// State Management
+const appState = {
+    currentQuestion: 0,
+    scores: { Realistic: 0, Investigative: 0, Artistic: 0, Social: 0, Enterprising: 0, Conventional: 0 },
+    hobbies: [
+        { text: "Fixing gadgets or working with tools", category: "Realistic" },
+        { text: "Researching how things work", category: "Investigative" },
+        { text: "Creating music or digital art", category: "Artistic" },
+        { text: "Mentoring or helping others", category: "Social" },
+        { text: "Leading a project or startup", category: "Enterprising" },
+        { text: "Managing data or organizing schedules", category: "Conventional" }
+    ]
+};
 
-let currentCardIndex = 0;
-let scores = {};
+// UI Engine: Replaces content without reloading
+function renderUI(content) {
+    const container = document.getElementById('quiz-container');
+    container.classList.add('fade-out');
+    
+    setTimeout(() => {
+        container.innerHTML = content;
+        container.classList.remove('fade-out');
+        container.classList.add('fade-in');
+    }, 300);
+}
 
 function startQuiz() {
-    const container = document.getElementById('quiz-container');
-    showCard();
+    showQuestion();
 }
 
-function showCard() {
-    if (currentCardIndex < hobbies.length) {
-        const hobby = hobbies[currentCardIndex];
-        const container = document.getElementById('quiz-container');
-        
-        // Dynamic Glass Card Injection
-        container.innerHTML = `
-            <div class="swipe-card animate-in">
-                <h3>Do you enjoy...</h3>
-                <p style="font-size: 1.2rem; margin: 20px 0;">${hobby.text}</p>
-                <div style="display: flex; gap: 10px; justify-content: center;">
-                    <button onclick="recordAnswer('${hobby.category}', false)" class="btn-no">✖ No</button>
-                    <button onclick="recordAnswer('${hobby.category}', true)" class="btn-yes">✔ Yes</button>
-                </div>
-            </div>
-        `;
-    } else {
-        calculateResults();
-    }
-}
-
-function recordAnswer(category, isYes) {
-    if (isYes) {
-        scores[category] = (scores[category] || 0) + 1;
-    }
-    currentCardIndex++;
-    showCard();
-}
-
-async function calculateResults() {
-    // Find the category with the highest score
-    const topCategory = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b, "Realistic");
+function showQuestion() {
+    const hobby = appState.hobbies[appState.currentQuestion];
     
-    const container = document.getElementById('quiz-container');
-    container.innerHTML = "<h3>Finding your Rwandan Pathway...</h3>";
+    const html = `
+        <div class="swipe-card">
+            <h3 style="color:var(--primary)">Hobby ${appState.currentQuestion + 1}/${appState.hobbies.length}</h3>
+            <p style="font-size: 1.5rem; margin: 30px 0;">${hobby.text}</p>
+            <div class="actions">
+                <button onclick="handleResponse(false)" class="btn-no">Nah</button>
+                <button onclick="handleResponse(true)" class="btn-yes">Yeah!</button>
+            </div>
+        </div>
+    `;
+    renderUI(html);
+}
 
-    // AJAX Call to your PHP API
+function handleResponse(isYes) {
+    const category = appState.hobbies[appState.currentQuestion].category;
+    if (isYes) appState.scores[category]++;
+    
+    appState.currentQuestion++;
+    
+    if (appState.currentQuestion < appState.hobbies.length) {
+        showQuestion();
+    } else {
+        fetchResults();
+    }
+}
+
+async function fetchResults() {
+    renderUI(`<h3>Calculating your best path...</h3>`);
+    
+    // Sort scores to find the highest category
+    const topCategory = Object.keys(appState.scores).reduce((a, b) => appState.scores[a] > appState.scores[b] ? a : b);
+    
     try {
         const response = await fetch(`api/get_results.php?interest=${topCategory}`);
-        const recommendations = await response.json();
-        displayFinalResults(recommendations);
-    } catch (error) {
-        console.error("Error fetching results:", error);
-        container.innerHTML = "<p>Something went wrong. Please try again.</p>";
+        const data = await response.json();
+        
+        let resultHtml = `<h3>Your Pathway</h3><div class="results-list">`;
+        data.forEach(item => {
+            resultHtml += `
+                <div class="result-item">
+                    <strong>${item.career_title}</strong>
+                    <p>${item.description}</p>
+                </div>`;
+        });
+        resultHtml += `<button onclick="location.reload()" class="btn-primary">Restart</button></div>`;
+        renderUI(resultHtml);
+        
+    } catch (e) {
+        renderUI(`<p>Stay faithful—our servers are recharging. Try again soon.</p>`);
     }
 }
 
-function displayFinalResults(data) {
-    const container = document.getElementById('quiz-container');
-    let html = `<h3>Recommended Careers:</h3><ul style="list-style:none; padding:0;">`;
-    
-    data.forEach(item => {
-        html += `
-            <li style="background: rgba(255,255,255,0.1); margin: 10px 0; padding: 15px; border-radius: 10px; border-left: 4px solid #2ecc71;">
-                <strong>${item.career_title}</strong><br>
-                <small>${item.description}</small>
-            </li>`;
-    });
-    
-    html += `</ul><button onclick="location.reload()" class="btn-primary">Start Over</button>`;
-    container.innerHTML = html;
-}
