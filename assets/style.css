@@ -1,0 +1,49 @@
+:root {
+    --primary: #2ecc71; /* Growth Green */
+    --secondary: #3498db;
+    --dark-bg: #0f172a;
+    --glass: rgba(255, 255, 255, 0.05);
+}
+
+body {
+    margin: 0;
+    background-color: var(--dark-bg);
+    color: white;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Glassmorphism Header */
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 5%;
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo span { color: var(--primary); }
+
+/* The Glass Card for the Quiz */
+.glass-card {
+    background: var(--glass);
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    padding: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.main-footer {
+    background: #070a13;
+    padding: 2rem;
+    text-align: center;
+    border-top: 1px solid var(--glass);
+    margin-top: 50px;
+}
