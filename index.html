@@ -1,1286 +1,234 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark" data-palette="blue">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PathAura – Full Feature Concept</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-<style>
-/* ═══════════════════════════════════════
-   DESIGN TOKENS — dual palette + dark/light
-═══════════════════════════════════════ */
-:root {
-  /* Blue palette */
-  --b-1: #F5D271; --b-2: #0F4E77; --b-3: #8A9577; --b-4: #E7B086; --b-5: #3D2010;
-  /* Red palette */
-  --r-1: #D8B747; --r-2: #8B2324; --r-3: #C84828; --r-4: #A23B18; --r-5: #6F2F24;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PathAura | Professional Career Navigator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ═══════════════════════════════════════
+           DYNAMIC DESIGN SYSTEM (CSS Variables)
+        ═══════════════════════════════════════ */
+        :root {
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-[data-palette="blue"][data-theme="dark"] {
-  --accent:   #F5D271; --primary:  #0F4E77; --secondary:#8A9577;
-  --warm:     #E7B086; --deep:     #0d1f2d;
-  --bg:       #0d1f2d; --bg2:      #132736; --bg3:      #1a3347;
-  --card:     #1a3347; --card2:    #1f3d55;
-  --text:     #f0ede6; --text2:    #a8bcc9; --text3:    #607a8a;
-  --border:   rgba(245,210,113,.12); --border2: rgba(255,255,255,.07);
-  --shadow:   0 4px 24px rgba(0,0,0,.45);
-  --active-nav:#F5D271;
-}
-[data-palette="blue"][data-theme="light"] {
-  --accent:   #c8a020; --primary:  #0F4E77; --secondary:#8A9577;
-  --warm:     #d4895a; --deep:     #0d1f2d;
-  --bg:       #f5f0e8; --bg2:      #ffffff; --bg3:      #eee8dd;
-  --card:     #ffffff; --card2:    #f5f0e8;
-  --text:     #1a2d3d; --text2:    #4a6275; --text3:    #8a9eaa;
-  --border:   rgba(15,78,119,.1); --border2: rgba(0,0,0,.06);
-  --shadow:   0 4px 24px rgba(15,78,119,.1);
-  --active-nav:#0F4E77;
-}
-[data-palette="red"][data-theme="dark"] {
-  --accent:   #D8B747; --primary:  #8B2324; --secondary:#A23B18;
-  --warm:     #C84828; --deep:     #1a0808;
-  --bg:       #1a0808; --bg2:      #251010; --bg3:      #311515;
-  --card:     #2a1010; --card2:    #351818;
-  --text:     #f5ede6; --text2:    #c4a090; --text3:    #8a6055;
-  --border:   rgba(216,183,71,.12); --border2: rgba(255,255,255,.07);
-  --shadow:   0 4px 24px rgba(0,0,0,.5);
-  --active-nav:#D8B747;
-}
-[data-palette="red"][data-theme="light"] {
-  --accent:   #b8942a; --primary:  #8B2324; --secondary:#A23B18;
-  --warm:     #C84828; --deep:     #1a0808;
-  --bg:       #fdf4ee; --bg2:      #ffffff; --bg3:      #f5e8df;
-  --card:     #ffffff; --card2:    #fdf4ee;
-  --text:     #2a0f0f; --text2:    #6b3020; --text3:    #aa7060;
-  --border:   rgba(139,35,36,.1); --border2: rgba(0,0,0,.06);
-  --shadow:   0 4px 24px rgba(139,35,36,.1);
-  --active-nav:#8B2324;
-}
+        /* Blue Palette */
+        [data-palette="blue"][data-theme="dark"] {
+            --accent: #F5D271; --primary: #0F4E77; --secondary: #8A9577;
+            --bg: #0d1f2d; --card: #1a3347; --text: #f0ede6; --text-muted: #a8bcc9;
+            --border: rgba(245,210,113,.12); --glass: rgba(13, 31, 45, 0.85);
+        }
+        /* Red Palette */
+        [data-palette="red"][data-theme="dark"] {
+            --accent: #D8B747; --primary: #8B2324; --secondary: #A23B18;
+            --bg: #1a0808; --card: #2a1010; --text: #f5ede6; --text-muted: #c4a090;
+            --border: rgba(216,183,71,.12); --glass: rgba(26, 8, 8, 0.85);
+        }
+        /* Light modes follow same pattern... */
 
-/* ═══════════════════ BASE ═══════════════════ */
-* { margin:0; padding:0; box-sizing:border-box; }
-html { scroll-behavior: smooth; }
+        /* ═══════════════════ BASE LAYOUT ═══════════════════ */
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            background: var(--bg);
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text);
+            transition: var(--transition);
+            min-height: 100vh;
+        }
 
-body {
-  background: var(--bg);
-  font-family: 'DM Sans', sans-serif;
-  color: var(--text);
-  transition: background .35s, color .35s;
-  min-height: 100vh;
-}
+        /* Responsive Wrapper: App feel on mobile, Website feel on Desktop */
+        .web-container {
+            width: 100%;
+            max-width: 1200px; /* Expands on Desktop */
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg);
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
 
-/* ═══════════════════ OUTER CHROME ═══════════════════ */
-.app-chrome {
-  max-width: 480px;
-  margin: 0 auto;
-  min-height: 100vh;
-  position: relative;
-  overflow: hidden;
-}
+        @media (max-width: 768px) {
+            .web-container { max-width: 100%; }
+        }
 
-/* ═══════════════════ CONTROLS BAR ═══════════════════ */
-.controls-bar {
-  position: fixed; top: 0; left: 50%; transform: translateX(-50%);
-  width: 100%; max-width: 480px;
-  z-index: 9999;
-  background: var(--bg2);
-  border-bottom: 1px solid var(--border2);
-  padding: 10px 16px;
-  display: flex; align-items: center; gap: 10px;
-  box-shadow: var(--shadow);
-  transition: background .35s;
-}
-.ctrl-logo {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 20px; font-weight: 600;
-  color: var(--accent);
-  margin-right: auto;
-}
-.ctrl-logo span { color: var(--text); font-style: italic; }
+        /* ═══════════════════ NAVIGATION ═══════════════════ */
+        .nav-header {
+            position: sticky; top: 0; z-index: 1000;
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            padding: 15px 25px;
+            display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+        }
 
-.toggle-pill {
-  display: flex; background: var(--bg3); border-radius: 100px;
-  padding: 3px; gap: 2px;
-}
-.toggle-btn {
-  padding: 5px 12px; border-radius: 100px; border: none;
-  background: transparent; color: var(--text2);
-  font-family: 'DM Sans', sans-serif; font-size: 11px;
-  font-weight: 500; cursor: pointer; transition: all .2s;
-  letter-spacing: .5px;
-}
-.toggle-btn.active {
-  background: var(--accent); color: var(--deep);
-}
+        .logo { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 700; color: var(--accent); }
+        .logo span { color: var(--text); font-style: italic; }
 
-/* ═══════════════════ SCREENS WRAPPER ═══════════════════ */
-.screens { padding-top: 52px; }
+        .controls-group { display: flex; gap: 15px; }
+        .btn-pill {
+            background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+            padding: 6px 15px; border-radius: 20px; color: var(--text);
+            cursor: pointer; font-size: 12px; transition: var(--transition);
+        }
+        .btn-pill:hover { background: var(--accent); color: var(--bg); }
 
-/* ═══════════════════ SCREEN BASE ═══════════════════ */
-.screen {
-  min-height: calc(100vh - 52px);
-  display: none; flex-direction: column;
-  animation: fadeIn .3s ease;
-}
-.screen.active { display: flex; }
-@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+        /* ═══════════════════ SCREEN CONTENT ═══════════════════ */
+        .screen { display: none; padding: 40px 20px; animation: fadeIn 0.5s ease; }
+        .screen.active { display: block; }
 
-/* ═══════════════════ ONBOARDING / WHO ARE YOU ═══════════════════ */
-.onboard-screen {
-  background: var(--bg);
-  justify-content: center; align-items: center;
-  padding: 32px 28px;
-  text-align: center;
-  position: relative; overflow: hidden;
-}
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-.onboard-bg-glow {
-  position: absolute; top: -80px; left: 50%; transform: translateX(-50%);
-  width: 320px; height: 320px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(var(--_a),.15) 0%, transparent 70%);
-}
-[data-palette="blue"] .onboard-bg-glow { --_a: 245,210,113; }
-[data-palette="red"]  .onboard-bg-glow { --_a: 216,183,71; }
+        /* Shared Card UI */
+        .card {
+            background: var(--card); border-radius: 20px; padding: 25px;
+            margin-bottom: 20px; border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+        .card:hover { border-color: var(--accent); transform: translateY(-3px); }
 
-.onboard-logo-wrap {
-  width: 90px; height: 90px; border-radius: 28px;
-  background: linear-gradient(135deg, var(--accent), var(--warm));
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 40px; font-weight: 600; color: var(--deep);
-  margin: 0 auto 24px;
-  box-shadow: 0 12px 40px rgba(0,0,0,.3);
-  position: relative; z-index: 1;
-}
+        /* Marks Bars */
+        .bar-track { height: 8px; background: rgba(255,255,255,0.1); border-radius: 10px; margin: 10px 0 20px; overflow: hidden; }
+        .bar-fill { height: 100%; background: linear-gradient(90deg, var(--secondary), var(--accent)); transition: width 1s ease; }
 
-.onboard-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 42px; font-weight: 300; line-height: 1;
-  margin-bottom: 8px; position: relative; z-index: 1;
-}
-.onboard-title em { font-style: italic; color: var(--accent); }
-.onboard-sub {
-  font-size: 14px; color: var(--text2); line-height: 1.65;
-  margin-bottom: 40px; position: relative; z-index: 1;
-}
+        /* Search Bar */
+        .search-wrap {
+            background: rgba(255,255,255,0.05); padding: 12px 20px;
+            border-radius: 15px; display: flex; align-items: center; margin-bottom: 30px;
+        }
+        .search-wrap input { background: transparent; border: none; color: white; width: 100%; outline: none; margin-left: 10px; }
 
-.who-label {
-  font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
-  color: var(--text3); margin-bottom: 16px; position: relative; z-index: 1;
-}
-
-.who-cards {
-  display: flex; flex-direction: column; gap: 12px;
-  width: 100%; position: relative; z-index: 1;
-}
-
-.who-card {
-  background: var(--card);
-  border: 1px solid var(--border2);
-  border-radius: 20px; padding: 18px 20px;
-  display: flex; align-items: center; gap: 16px;
-  cursor: pointer; transition: all .2s; text-align: left;
-  box-shadow: var(--shadow);
-}
-.who-card:hover, .who-card:active {
-  border-color: var(--accent);
-  transform: translateY(-2px);
-}
-.who-card-icon {
-  width: 52px; height: 52px; border-radius: 16px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 24px; flex-shrink: 0;
-}
-.who-card.s3 .who-card-icon   { background: rgba(245,210,113,.12); }
-.who-card.uni .who-card-icon  { background: rgba(138,149,119,.15); }
-.who-card.adult .who-card-icon{ background: rgba(231,176,134,.15); }
-[data-palette="red"] .who-card.s3 .who-card-icon    { background: rgba(216,183,71,.12); }
-[data-palette="red"] .who-card.uni .who-card-icon   { background: rgba(200,72,40,.15); }
-[data-palette="red"] .who-card.adult .who-card-icon { background: rgba(162,59,24,.15); }
-
-.who-card-text {}
-.who-card-title { font-size: 15px; font-weight: 600; margin-bottom: 3px; }
-.who-card-desc  { font-size: 12px; color: var(--text2); line-height: 1.4; }
-.who-card-arrow { margin-left: auto; color: var(--text3); font-size: 18px; }
-
-/* ═══════════════════ HEADER COMPONENT ═══════════════════ */
-.screen-header {
-  padding: 20px 22px 16px;
-  background: var(--primary);
-  position: relative; overflow: hidden;
-}
-.screen-header::before {
-  content: '';
-  position: absolute; top: -50px; right: -50px;
-  width: 180px; height: 180px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,255,255,.06) 0%, transparent 70%);
-}
-.screen-header-top {
-  display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
-}
-.back-btn {
-  width: 36px; height: 36px; border-radius: 11px;
-  background: rgba(255,255,255,.12); border: none;
-  color: white; font-size: 16px; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-}
-.header-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 26px; font-weight: 400; color: white; line-height: 1.1;
-}
-.header-title em { font-style: italic; color: var(--accent); }
-.header-sub { font-size: 12px; color: rgba(255,255,255,.5); margin-top: 2px; }
-
-/* search bar */
-.search-bar {
-  display: flex; align-items: center; gap: 10px;
-  background: rgba(255,255,255,.1);
-  border: 1px solid rgba(255,255,255,.15);
-  border-radius: 14px; padding: 10px 14px;
-  position: relative; z-index: 1;
-}
-.search-icon { font-size: 16px; color: rgba(255,255,255,.5); }
-.search-input {
-  flex: 1; background: none; border: none; outline: none;
-  color: white; font-family: 'DM Sans', sans-serif;
-  font-size: 13px;
-}
-.search-input::placeholder { color: rgba(255,255,255,.4); }
-
-/* ═══════════════════ SCROLLABLE BODY ═══════════════════ */
-.screen-body {
-  flex: 1; overflow-y: auto; padding: 20px 18px 100px;
-  scrollbar-width: none;
-}
-.screen-body::-webkit-scrollbar { display: none; }
-
-/* ═══════════════════ SECTION HEADING ═══════════════════ */
-.sec-head {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 12px;
-}
-.sec-title { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--text3); }
-.sec-more  { font-size: 12px; color: var(--accent); cursor: pointer; }
-
-/* ═══════════════════ JOB / OPPORTUNITY CARDS ═══════════════════ */
-.job-card {
-  background: var(--card); border: 1px solid var(--border2);
-  border-radius: 20px; padding: 16px 18px; margin-bottom: 12px;
-  box-shadow: var(--shadow); cursor: pointer; transition: all .2s;
-  display: flex; align-items: flex-start; gap: 14px;
-}
-.job-card:hover { border-color: var(--accent); transform: translateY(-1px); }
-.job-logo {
-  width: 48px; height: 48px; border-radius: 14px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 22px; flex-shrink: 0;
-  background: var(--bg3);
-}
-.job-info { flex: 1; }
-.job-title { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
-.job-company { font-size: 12px; color: var(--text2); margin-bottom: 6px; }
-.job-tags { display: flex; gap: 6px; flex-wrap: wrap; }
-.job-tag {
-  font-size: 10px; font-weight: 500; padding: 3px 9px;
-  border-radius: 100px; letter-spacing: .3px;
-}
-.tag-green { background: rgba(138,149,119,.2); color: var(--secondary); }
-.tag-gold  { background: rgba(245,210,113,.15); color: var(--accent); }
-.tag-warm  { background: rgba(231,176,134,.15); color: var(--warm); }
-[data-palette="red"] .tag-green { background: rgba(162,59,24,.2); color: var(--secondary); }
-[data-palette="red"] .tag-gold  { background: rgba(216,183,71,.15); color: var(--accent); }
-[data-palette="red"] .tag-warm  { background: rgba(200,72,40,.15); color: var(--warm); }
-.job-save {
-  color: var(--text3); font-size: 18px; flex-shrink: 0; margin-top: 2px;
-}
-
-/* platform pill */
-.platform-pill {
-  display: inline-flex; align-items: center; gap: 6px;
-  background: var(--bg3); border-radius: 100px;
-  padding: 6px 12px; margin-right: 8px; margin-bottom: 8px;
-  font-size: 12px; cursor: pointer; transition: all .2s;
-  border: 1px solid var(--border2);
-}
-.platform-pill:hover { border-color: var(--accent); }
-.platform-pill .dot { width: 8px; height: 8px; border-radius: 50%; }
-.dot-li   { background: #0077b5; }
-.dot-goo  { background: #4285F4; }
-.dot-ind  { background: #e8553e; }
-.dot-up   { background: #6fda44; }
-
-/* ═══════════════════ UNIVERSITY CARDS ═══════════════════ */
-.uni-card {
-  background: var(--card); border: 1px solid var(--border2);
-  border-radius: 20px; overflow: hidden; margin-bottom: 14px;
-  box-shadow: var(--shadow); cursor: pointer; transition: all .2s;
-}
-.uni-card:hover { border-color: var(--accent); }
-.uni-card-top {
-  padding: 18px 18px 12px;
-  display: flex; align-items: flex-start; gap: 14px;
-}
-.uni-icon {
-  width: 50px; height: 50px; border-radius: 14px;
-  background: var(--bg3); display: flex; align-items: center;
-  justify-content: center; font-size: 24px; flex-shrink: 0;
-}
-.uni-info {}
-.uni-name { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
-.uni-loc  { font-size: 12px; color: var(--text2); }
-.uni-card-bottom {
-  padding: 12px 18px;
-  background: var(--bg3);
-  display: flex; gap: 16px;
-}
-.uni-stat {}
-.uni-stat-val { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; color: var(--accent); }
-.uni-stat-key { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; }
-
-/* budget slider */
-.budget-slider-wrap {
-  background: var(--card); border: 1px solid var(--border2);
-  border-radius: 20px; padding: 18px; margin-bottom: 16px;
-  box-shadow: var(--shadow);
-}
-.budget-label { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
-.budget-val { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 600; color: var(--accent); margin-bottom: 14px; }
-input[type=range] {
-  width: 100%; accent-color: var(--accent);
-  height: 4px; border-radius: 100px;
-}
-
-/* ═══════════════════ MARKS HELPER ═══════════════════ */
-.marks-card {
-  background: var(--card); border: 1px solid var(--border2);
-  border-radius: 20px; padding: 18px; margin-bottom: 12px;
-  box-shadow: var(--shadow);
-}
-.marks-subject {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 10px;
-}
-.marks-subject-name { font-size: 13px; font-weight: 500; }
-.marks-subject-score {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 20px; font-weight: 600; color: var(--accent);
-}
-.marks-bar-track {
-  height: 6px; border-radius: 100px;
-  background: var(--bg3); margin-bottom: 14px; overflow: hidden;
-}
-.marks-bar-fill {
-  height: 100%; border-radius: 100px;
-  background: linear-gradient(90deg, var(--secondary), var(--accent));
-}
-
-.recommendation-card {
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
-  border-radius: 20px; padding: 18px; margin-bottom: 12px;
-  position: relative; overflow: hidden;
-}
-[data-palette="red"] .recommendation-card {
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
-}
-.recommendation-card::after {
-  content: ''; position: absolute; top: -30px; right: -30px;
-  width: 120px; height: 120px; border-radius: 50%;
-  background: rgba(255,255,255,.06);
-}
-.rec-badge {
-  display: inline-block; background: var(--accent); color: var(--deep);
-  font-size: 10px; font-weight: 600; padding: 3px 10px;
-  border-radius: 100px; letter-spacing: 1px; text-transform: uppercase;
-  margin-bottom: 8px;
-}
-.rec-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: white; margin-bottom: 4px; }
-.rec-desc  { font-size: 12px; color: rgba(255,255,255,.6); line-height: 1.5; }
-
-/* ═══════════════════ SETTINGS ═══════════════════ */
-.settings-section {
-  background: var(--card); border: 1px solid var(--border2);
-  border-radius: 20px; overflow: hidden; margin-bottom: 14px;
-  box-shadow: var(--shadow);
-}
-.settings-item {
-  display: flex; align-items: center; gap: 14px;
-  padding: 15px 18px;
-  border-bottom: 1px solid var(--border2);
-  cursor: pointer; transition: background .15s;
-}
-.settings-item:last-child { border-bottom: none; }
-.settings-item:hover { background: var(--bg3); }
-.settings-icon {
-  width: 38px; height: 38px; border-radius: 12px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 18px; flex-shrink: 0;
-}
-.si-blue   { background: rgba(15,78,119,.15); }
-.si-green  { background: rgba(138,149,119,.15); }
-.si-gold   { background: rgba(245,210,113,.12); }
-.si-red    { background: rgba(200,72,40,.12); }
-.si-warm   { background: rgba(231,176,134,.15); }
-.si-purple { background: rgba(120,80,180,.12); }
-[data-palette="red"] .si-blue { background: rgba(139,35,36,.15); }
-
-.settings-text { flex: 1; }
-.settings-label { font-size: 14px; font-weight: 500; }
-.settings-desc  { font-size: 11px; color: var(--text2); margin-top: 1px; }
-.settings-right { color: var(--text3); font-size: 14px; }
-
-/* toggle switch */
-.toggle-switch {
-  width: 44px; height: 24px; border-radius: 12px;
-  background: var(--bg3); position: relative; cursor: pointer;
-  transition: background .2s; flex-shrink: 0;
-  border: 1px solid var(--border2);
-}
-.toggle-switch.on { background: var(--accent); border-color: var(--accent); }
-.toggle-switch::after {
-  content: ''; position: absolute; width: 18px; height: 18px;
-  border-radius: 50%; background: white;
-  top: 2px; left: 2px; transition: left .2s;
-  box-shadow: 0 1px 4px rgba(0,0,0,.2);
-}
-.toggle-switch.on::after { left: 22px; }
-
-/* language grid */
-.lang-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
-.lang-btn {
-  background: var(--bg3); border: 1px solid var(--border2);
-  border-radius: 12px; padding: 10px 6px; text-align: center;
-  cursor: pointer; transition: all .2s; font-size: 13px;
-  font-family: 'DM Sans', sans-serif;
-}
-.lang-btn:hover, .lang-btn.active {
-  border-color: var(--accent); color: var(--accent);
-  background: var(--card);
-}
-.lang-flag { font-size: 20px; display: block; margin-bottom: 3px; }
-
-/* accessibility grid */
-.access-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.access-card {
-  background: var(--card); border: 1px solid var(--border2);
-  border-radius: 16px; padding: 16px 14px; cursor: pointer;
-  transition: all .2s; text-align: center;
-}
-.access-card:hover, .access-card.on { border-color: var(--accent); }
-.access-card.on { background: rgba(245,210,113,.07); }
-[data-palette="red"] .access-card.on { background: rgba(216,183,71,.07); }
-.access-icon { font-size: 26px; margin-bottom: 8px; }
-.access-name { font-size: 12px; font-weight: 500; margin-bottom: 2px; }
-.access-desc { font-size: 10px; color: var(--text3); line-height: 1.4; }
-
-/* ═══════════════════ PROFILE / LOGIN ═══════════════════ */
-.profile-hero {
-  padding: 36px 28px 28px; text-align: center;
-  background: var(--primary); position: relative; overflow: hidden;
-}
-.profile-hero::before {
-  content: ''; position: absolute; inset: 0;
-  background: radial-gradient(ellipse at 50% -20%, rgba(255,255,255,.08) 0%, transparent 60%);
-}
-.avatar {
-  width: 80px; height: 80px; border-radius: 50%;
-  margin: 0 auto 12px;
-  background: linear-gradient(135deg, var(--accent), var(--warm));
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 34px; color: var(--deep); font-weight: 600;
-  box-shadow: 0 0 0 3px rgba(255,255,255,.15);
-  position: relative; z-index: 1;
-}
-.profile-name { font-family: 'Cormorant Garamond', serif; font-size: 26px; color: white; margin-bottom: 3px; position: relative; z-index: 1; }
-.profile-type-badge {
-  display: inline-block; background: rgba(255,255,255,.12);
-  border: 1px solid rgba(255,255,255,.2);
-  color: rgba(255,255,255,.8); font-size: 11px;
-  padding: 4px 12px; border-radius: 100px;
-  margin-top: 8px; position: relative; z-index: 1;
-}
-
-/* session card */
-.session-card {
-  background: var(--card); border: 1px solid var(--border2);
-  border-radius: 16px; padding: 14px 16px; margin-bottom: 10px;
-  display: flex; align-items: center; gap: 12px;
-  box-shadow: var(--shadow);
-}
-.session-icon { font-size: 22px; flex-shrink: 0; }
-.session-info { flex: 1; }
-.session-device { font-size: 13px; font-weight: 500; }
-.session-meta { font-size: 11px; color: var(--text3); margin-top: 1px; }
-.session-active-dot {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: #4ade80; flex-shrink: 0;
-}
-.session-logout-btn {
-  font-size: 11px; color: #e05050; cursor: pointer;
-  padding: 4px 10px; border-radius: 8px;
-  background: rgba(224,80,80,.1); border: none;
-  font-family: 'DM Sans', sans-serif;
-}
-
-/* ═══════════════════ BOTTOM NAV ═══════════════════ */
-.bottom-nav {
-  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
-  width: 100%; max-width: 480px;
-  height: 68px; background: var(--bg2);
-  border-top: 1px solid var(--border2);
-  display: flex; align-items: center; justify-content: space-around;
-  padding: 0 8px; z-index: 1000;
-  transition: background .35s;
-}
-.nav-item {
-  display: flex; flex-direction: column; align-items: center;
-  gap: 3px; font-size: 10px; color: var(--text3);
-  cursor: pointer; transition: color .2s; flex: 1;
-  padding: 4px 0;
-}
-.nav-item.active { color: var(--active-nav); }
-.nav-ico { font-size: 21px; }
-.nav-item.active .nav-ico {
-  filter: drop-shadow(0 0 4px var(--accent));
-}
-
-/* ═══════════════════ INFO CHIPS ═══════════════════ */
-.chip-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
-.chip {
-  padding: 6px 14px; border-radius: 100px; font-size: 12px;
-  border: 1px solid var(--border2); background: var(--card);
-  cursor: pointer; transition: all .2s;
-}
-.chip.active, .chip:hover { border-color: var(--accent); color: var(--accent); background: var(--bg3); }
-
-/* ═══════════════════ AURA CARD ═══════════════════ */
-.aura-summary {
-  background: var(--primary);
-  border-radius: 22px; padding: 20px; margin-bottom: 16px;
-  position: relative; overflow: hidden;
-}
-.aura-summary::after {
-  content: ''; position: absolute; top: -40px; right: -40px;
-  width: 160px; height: 160px; border-radius: 50%;
-  background: rgba(255,255,255,.05);
-}
-.aura-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; }
-.aura-label { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,.4); }
-.aura-score { font-family: 'Cormorant Garamond', serif; font-size: 56px; font-weight: 300; color: var(--accent); line-height: 1; }
-.aura-grade { font-size: 11px; color: rgba(255,255,255,.5); margin-top: 4px; text-align: right; }
-.aura-grade strong { color: var(--accent); }
-.aura-desc-text { font-size: 13px; color: rgba(255,255,255,.6); line-height: 1.6; margin-bottom: 14px; }
-.aura-bar { height: 5px; border-radius: 100px; background: rgba(255,255,255,.1); overflow: hidden; }
-.aura-bar-fill { height: 100%; width: 73%; background: linear-gradient(90deg, var(--secondary), var(--accent)); border-radius: 100px; }
-
-/* ═══════════════════ SUGGESTED FEATURES BANNER ═══════════════════ */
-.suggest-banner {
-  background: linear-gradient(135deg, var(--secondary), var(--primary));
-  border-radius: 20px; padding: 18px; margin-bottom: 14px;
-  position: relative; overflow: hidden;
-}
-[data-palette="red"] .suggest-banner { background: linear-gradient(135deg, var(--secondary), var(--primary)); }
-.suggest-banner::after {
-  content: ''; position: absolute; bottom: -20px; right: -20px;
-  width: 100px; height: 100px; border-radius: 50%;
-  background: rgba(255,255,255,.06);
-}
-.suggest-tag {
-  font-size: 10px; font-weight: 600; letter-spacing: 1.5px;
-  text-transform: uppercase; color: var(--accent); margin-bottom: 6px;
-}
-.suggest-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; color: white; margin-bottom: 4px; }
-.suggest-desc  { font-size: 12px; color: rgba(255,255,255,.6); line-height: 1.5; }
-
-/* misc */
-.divider { height: 1px; background: var(--border2); margin: 16px 0; }
-.section-gap { height: 20px; }
-.text-accent { color: var(--accent); }
-.fw6 { font-weight: 600; }
-</style>
+    </style>
 </head>
-<body>
+<body data-theme="dark" data-palette="blue">
 
-<div class="app-chrome">
+<div class="web-container">
+    <header class="nav-header">
+        <div class="logo">Path<span>Aura</span></div>
+        <div class="controls-group">
+            <button class="btn-pill" onclick="cyclePalette()">🎨 Theme</button>
+            <button class="btn-pill" onclick="toggleMode()">🌙/☀️</button>
+        </div>
+    </header>
 
-  <!-- TOP CONTROLS -->
-  <div class="controls-bar">
-    <div class="ctrl-logo">Path<span>Aura</span></div>
-
-    <!-- Palette Toggle -->
-    <div class="toggle-pill">
-      <button class="toggle-btn active" onclick="setPalette('blue')">🌊 Blue</button>
-      <button class="toggle-btn" onclick="setPalette('red')">🔥 Terra</button>
-    </div>
-
-    <!-- Theme Toggle -->
-    <div class="toggle-pill">
-      <button class="toggle-btn active" onclick="setTheme('dark')">🌙</button>
-      <button class="toggle-btn" onclick="setTheme('light')">☀️</button>
-    </div>
-  </div>
-
-  <!-- SCREENS -->
-  <div class="screens">
-
-    <!-- ══════ SCREEN: WHO ARE YOU ══════ -->
-    <div class="screen active" id="screen-who">
-      <div class="onboard-screen">
-        <div class="onboard-bg-glow"></div>
-        <div class="onboard-logo-wrap">PA</div>
-        <h1 class="onboard-title">Path<em>Aura</em></h1>
-        <p class="onboard-sub">Your AI-powered career compass.<br>Let's personalise your experience.</p>
-        <p class="who-label">I am a…</p>
-        <div class="who-cards">
-          <div class="who-card s3" onclick="goTo('screen-s3')">
-            <div class="who-card-icon">🎒</div>
-            <div class="who-card-text">
-              <div class="who-card-title">Senior 3 Student</div>
-              <div class="who-card-desc">Get course & university recommendations based on your marks</div>
+    <main>
+        
+        <section class="screen active" id="home">
+            <div style="text-align: center; margin-bottom: 50px;">
+                <h1 style="font-family:'Cormorant Garamond'; font-size: 3.5rem;">Choose your <em>Path</em></h1>
+                <p style="color: var(--text-muted)">Personalized career intelligence for every stage.</p>
             </div>
-            <div class="who-card-arrow">›</div>
-          </div>
-          <div class="who-card uni" onclick="goTo('screen-uni')">
-            <div class="who-card-icon">🎓</div>
-            <div class="who-card-text">
-              <div class="who-card-title">University Student</div>
-              <div class="who-card-desc">Find internships, career paths & opportunities by field</div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                <div class="card" onclick="showScreen('s3-screen')">
+                    <h2>🎒 Senior 3</h2>
+                    <p>Course recommendations based on your school marks.</p>
+                </div>
+                <div class="card" onclick="showScreen('jobs-screen')">
+                    <h2>💼 Career</h2>
+                    <p>Find jobs, internships, and salary insights.</p>
+                </div>
             </div>
-            <div class="who-card-arrow">›</div>
-          </div>
-          <div class="who-card adult" onclick="goTo('screen-jobs')">
-            <div class="who-card-icon">💼</div>
-            <div class="who-card-text">
-              <div class="who-card-title">Working Adult</div>
-              <div class="who-card-desc">Discover jobs, upskill pathways & salary insights</div>
+        </section>
+
+        <section class="screen" id="s3-screen">
+            <button class="btn-pill" onclick="showScreen('home')" style="margin-bottom: 20px;">← Back Home</button>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 30px;">
+                <div class="card">
+                    <h3>Your Marks</h3>
+                    <p style="font-size: 0.8rem; margin-bottom: 15px;">Update your scores to refresh recommendations.</p>
+                    
+                    <div>Mathematics <span style="float:right">78%</span></div>
+                    <div class="bar-track"><div class="bar-fill" style="width: 78%"></div></div>
+                    
+                    <div>Sciences <span style="float:right">84%</span></div>
+                    <div class="bar-track"><div class="bar-fill" style="width: 84%"></div></div>
+                </div>
+
+                <div>
+                    <div class="search-wrap">
+                        <span>🔍</span>
+                        <input type="text" id="courseSearch" placeholder="Search courses (e.g. Engineering)..." onkeyup="filterCourses()">
+                    </div>
+
+                    <div id="course-list">
+                        <div class="card course-item" data-name="Computer Science">
+                            <span style="background: var(--accent); color: var(--bg); padding: 4px 10px; border-radius: 10px; font-size: 0.7rem; font-weight: bold;">94% MATCH</span>
+                            <h3 style="margin-top: 10px;">Computer Science & Engineering</h3>
+                            <p style="color: var(--text-muted)">Makerere University • 4 Years</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="who-card-arrow">›</div>
-          </div>
-        </div>
-      </div>
-    </div>
+        </section>
 
-    <!-- ══════ SCREEN: SENIOR 3 HELPER ══════ -->
-    <div class="screen" id="screen-s3">
-      <div class="screen-header">
-        <div class="screen-header-top">
-          <button class="back-btn" onclick="goTo('screen-who')">←</button>
-          <div>
-            <div class="header-title">Senior 3 <em>Guide</em></div>
-            <div class="header-sub">Courses matched to your marks</div>
-          </div>
-        </div>
-        <div class="search-bar">
-          <span class="search-icon">🔍</span>
-          <input class="search-input" placeholder="Search courses or universities…">
-        </div>
-      </div>
-      <div class="screen-body">
-
-        <div class="marks-card">
-          <div class="sec-head" style="margin-bottom:14px">
-            <span class="sec-title">Your Marks</span>
-            <span class="sec-more">Edit</span>
-          </div>
-          <div class="marks-subject">
-            <span class="marks-subject-name">Mathematics</span>
-            <span class="marks-subject-score">78%</span>
-          </div>
-          <div class="marks-bar-track"><div class="marks-bar-fill" style="width:78%"></div></div>
-          <div class="marks-subject">
-            <span class="marks-subject-name">Sciences</span>
-            <span class="marks-subject-score">84%</span>
-          </div>
-          <div class="marks-bar-track"><div class="marks-bar-fill" style="width:84%"></div></div>
-          <div class="marks-subject">
-            <span class="marks-subject-name">Languages</span>
-            <span class="marks-subject-score">71%</span>
-          </div>
-          <div class="marks-bar-track"><div class="marks-bar-fill" style="width:71%"></div></div>
-          <div class="marks-subject" style="margin-bottom:0">
-            <span class="marks-subject-name">Humanities</span>
-            <span class="marks-subject-score">65%</span>
-          </div>
-          <div class="marks-bar-track" style="margin-bottom:0"><div class="marks-bar-fill" style="width:65%"></div></div>
-        </div>
-
-        <div class="divider"></div>
-        <div class="sec-head"><span class="sec-title">Best Fit Courses</span></div>
-
-        <div class="recommendation-card">
-          <div class="rec-badge">Best Match · 94%</div>
-          <div class="rec-title">Computer Science & Engineering</div>
-          <div class="rec-desc">Makerere University · Entry: 72% avg · 4 years</div>
-        </div>
-        <div class="recommendation-card" style="background: linear-gradient(135deg, var(--secondary), #5a6b50)">
-          <div class="rec-badge">Strong Match · 88%</div>
-          <div class="rec-title">Biomedical Sciences</div>
-          <div class="rec-desc">Mbarara University · Entry: 80% avg · 5 years</div>
-        </div>
-        <div class="recommendation-card" style="background: linear-gradient(135deg, #7a5530, #5a3d20)">
-          <div class="rec-badge">Good Match · 76%</div>
-          <div class="rec-title">Business Administration</div>
-          <div class="rec-desc">Multiple universities · Entry: 65% avg · 3 years</div>
-        </div>
-
-        <div class="divider"></div>
-        <div class="sec-head"><span class="sec-title">Find by Budget</span></div>
-        <div class="budget-slider-wrap">
-          <div class="budget-label">Annual Tuition Budget</div>
-          <div class="budget-val" id="budget-val">UGX 2,500,000</div>
-          <input type="range" min="500000" max="10000000" step="250000" value="2500000"
-            oninput="updateBudget(this.value)">
-          <div style="display:flex;justify-content:space-between;margin-top:6px">
-            <span style="font-size:10px;color:var(--text3)">UGX 500k</span>
-            <span style="font-size:10px;color:var(--text3)">UGX 10M</span>
-          </div>
-        </div>
-
-        <div class="suggest-banner">
-          <div class="suggest-tag">✦ Coming Soon</div>
-          <div class="suggest-title">Scholarship Finder</div>
-          <div class="suggest-desc">Automatically match you to scholarships based on your marks and financial situation</div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- ══════ SCREEN: JOBS & OPPORTUNITIES ══════ -->
-    <div class="screen" id="screen-jobs">
-      <div class="screen-header">
-        <div class="screen-header-top">
-          <button class="back-btn" onclick="goTo('screen-who')">←</button>
-          <div>
-            <div class="header-title">Jobs & <em>Opportunities</em></div>
-            <div class="header-sub">Based on your field of study</div>
-          </div>
-        </div>
-        <div class="search-bar">
-          <span class="search-icon">🔍</span>
-          <input class="search-input" placeholder="Role, skill, or company…">
-        </div>
-      </div>
-      <div class="screen-body">
-
-        <div class="chip-row">
-          <div class="chip active">All</div>
-          <div class="chip">Remote</div>
-          <div class="chip">Entry Level</div>
-          <div class="chip">Internship</div>
-          <div class="chip">Full-time</div>
-        </div>
-
-        <div class="sec-head"><span class="sec-title">Find on Platforms</span></div>
-        <div style="margin-bottom:16px">
-          <span class="platform-pill"><span class="dot dot-li"></span>LinkedIn</span>
-          <span class="platform-pill"><span class="dot dot-goo"></span>Google Jobs</span>
-          <span class="platform-pill"><span class="dot dot-ind"></span>Indeed</span>
-          <span class="platform-pill"><span class="dot dot-up"></span>Upwork</span>
-        </div>
-
-        <div class="sec-head"><span class="sec-title">Matched For You</span><span class="sec-more">Filter ⚙</span></div>
-
-        <div class="job-card">
-          <div class="job-logo">🏢</div>
-          <div class="job-info">
-            <div class="job-title">UX Designer</div>
-            <div class="job-company">MTN Uganda · Kampala</div>
-            <div class="job-tags">
-              <span class="job-tag tag-gold">Full-time</span>
-              <span class="job-tag tag-green">Remote OK</span>
-              <span class="job-tag tag-warm">UGX 2M+</span>
+        <section class="screen" id="jobs-screen">
+            <button class="btn-pill" onclick="showScreen('home')" style="margin-bottom: 20px;">← Back Home</button>
+            
+            <div class="search-wrap">
+                <span>🔍</span>
+                <input type="text" id="jobSearch" placeholder="Search roles or companies..." onkeyup="filterJobs()">
             </div>
-          </div>
-          <div class="job-save">🔖</div>
-        </div>
-        <div class="job-card">
-          <div class="job-logo">💊</div>
-          <div class="job-info">
-            <div class="job-title">Data Analyst</div>
-            <div class="job-company">Airtel Africa · Nairobi</div>
-            <div class="job-tags">
-              <span class="job-tag tag-gold">Full-time</span>
-              <span class="job-tag tag-warm">KES 85k+</span>
+
+            <div id="job-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                <div class="card job-item" data-name="UX Designer">
+                    <div style="display: flex; justify-content: space-between;">
+                        <h3>UX Designer</h3>
+                        <span style="color: var(--accent)">★</span>
+                    </div>
+                    <p>MTN Uganda • Kampala</p>
+                    <div style="margin-top: 10px; display:flex; gap: 5px;">
+                        <span style="font-size: 10px; border: 1px solid var(--accent); padding: 2px 8px; border-radius: 10px;">Full-time</span>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div class="job-save">🔖</div>
-        </div>
-        <div class="job-card">
-          <div class="job-logo">🌍</div>
-          <div class="job-info">
-            <div class="job-title">Product Manager Intern</div>
-            <div class="job-company">Andela · Remote</div>
-            <div class="job-tags">
-              <span class="job-tag tag-green">Internship</span>
-              <span class="job-tag tag-green">Remote</span>
-            </div>
-          </div>
-          <div class="job-save">🔖</div>
-        </div>
-        <div class="job-card">
-          <div class="job-logo">🏦</div>
-          <div class="job-info">
-            <div class="job-title">Software Engineer</div>
-            <div class="job-company">Equity Bank · Kampala</div>
-            <div class="job-tags">
-              <span class="job-tag tag-gold">Full-time</span>
-              <span class="job-tag tag-warm">UGX 3.5M+</span>
-            </div>
-          </div>
-          <div class="job-save">🔖</div>
-        </div>
+        </section>
 
-        <div class="suggest-banner">
-          <div class="suggest-tag">✦ Coming Soon</div>
-          <div class="suggest-title">CV Builder + AI Review</div>
-          <div class="suggest-desc">Build a tailored CV for each application and get instant AI feedback before you apply</div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- ══════ SCREEN: UNIVERSITY SEARCH ══════ -->
-    <div class="screen" id="screen-uni">
-      <div class="screen-header">
-        <div class="screen-header-top">
-          <button class="back-btn" onclick="goTo('screen-who')">←</button>
-          <div>
-            <div class="header-title">University <em>Finder</em></div>
-            <div class="header-sub">Search by budget, course & location</div>
-          </div>
-        </div>
-        <div class="search-bar">
-          <span class="search-icon">🔍</span>
-          <input class="search-input" placeholder="Course, university, country…">
-        </div>
-      </div>
-      <div class="screen-body">
-
-        <div class="budget-slider-wrap">
-          <div class="budget-label">My Annual Budget</div>
-          <div class="budget-val" id="budget-val2">UGX 4,000,000</div>
-          <input type="range" min="500000" max="20000000" step="500000" value="4000000"
-            oninput="updateBudget2(this.value)">
-          <div style="display:flex;justify-content:space-between;margin-top:6px">
-            <span style="font-size:10px;color:var(--text3)">UGX 500k</span>
-            <span style="font-size:10px;color:var(--text3)">UGX 20M</span>
-          </div>
-        </div>
-
-        <div class="chip-row">
-          <div class="chip active">Uganda</div>
-          <div class="chip">Kenya</div>
-          <div class="chip">Rwanda</div>
-          <div class="chip">Online</div>
-          <div class="chip">Abroad</div>
-        </div>
-
-        <div class="sec-head"><span class="sec-title">Within Your Budget</span></div>
-
-        <div class="uni-card">
-          <div class="uni-card-top">
-            <div class="uni-icon">🎓</div>
-            <div class="uni-info">
-              <div class="uni-name">Makerere University</div>
-              <div class="uni-loc">📍 Kampala, Uganda</div>
-            </div>
-          </div>
-          <div class="uni-card-bottom">
-            <div class="uni-stat"><div class="uni-stat-val">UGX 1.8M</div><div class="uni-stat-key">/ Year</div></div>
-            <div class="uni-stat"><div class="uni-stat-val">140+</div><div class="uni-stat-key">Courses</div></div>
-            <div class="uni-stat"><div class="uni-stat-val">4.2★</div><div class="uni-stat-key">Rating</div></div>
-          </div>
-        </div>
-        <div class="uni-card">
-          <div class="uni-card-top">
-            <div class="uni-icon">🏛️</div>
-            <div class="uni-info">
-              <div class="uni-name">Mbarara University</div>
-              <div class="uni-loc">📍 Mbarara, Uganda</div>
-            </div>
-          </div>
-          <div class="uni-card-bottom">
-            <div class="uni-stat"><div class="uni-stat-val">UGX 2.2M</div><div class="uni-stat-key">/ Year</div></div>
-            <div class="uni-stat"><div class="uni-stat-val">60+</div><div class="uni-stat-key">Courses</div></div>
-            <div class="uni-stat"><div class="uni-stat-val">4.0★</div><div class="uni-stat-key">Rating</div></div>
-          </div>
-        </div>
-        <div class="uni-card">
-          <div class="uni-card-top">
-            <div class="uni-icon">🌐</div>
-            <div class="uni-info">
-              <div class="uni-name">University of Rwanda</div>
-              <div class="uni-loc">📍 Kigali, Rwanda</div>
-            </div>
-          </div>
-          <div class="uni-card-bottom">
-            <div class="uni-stat"><div class="uni-stat-val">RWF 500k</div><div class="uni-stat-key">/ Year</div></div>
-            <div class="uni-stat"><div class="uni-stat-val">80+</div><div class="uni-stat-key">Courses</div></div>
-            <div class="uni-stat"><div class="uni-stat-val">4.1★</div><div class="uni-stat-key">Rating</div></div>
-          </div>
-        </div>
-
-        <div class="suggest-banner">
-          <div class="suggest-tag">✦ Coming Soon</div>
-          <div class="suggest-title">Student Loan & Bursary Matcher</div>
-          <div class="suggest-desc">Connect directly with financing options and government grants available for your chosen programme</div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- ══════ SCREEN: SETTINGS ══════ -->
-    <div class="screen" id="screen-settings">
-      <div class="screen-header" style="padding:22px 22px 22px">
-        <div class="header-title" style="margin-bottom:2px">Settings <em>&amp; Preferences</em></div>
-        <div class="header-sub">Personalise your PathAura</div>
-      </div>
-      <div class="screen-body">
-
-        <!-- Account -->
-        <div class="sec-head"><span class="sec-title">Account</span></div>
-        <div class="settings-section">
-          <div class="settings-item">
-            <div class="settings-icon si-blue">👤</div>
-            <div class="settings-text">
-              <div class="settings-label">Profile</div>
-              <div class="settings-desc">Edit name, photo, bio</div>
-            </div>
-            <div class="settings-right">›</div>
-          </div>
-          <div class="settings-item" onclick="goTo('screen-profile')">
-            <div class="settings-icon si-red">🔐</div>
-            <div class="settings-text">
-              <div class="settings-label">Active Sessions</div>
-              <div class="settings-desc">Log out of other devices</div>
-            </div>
-            <div class="settings-right">›</div>
-          </div>
-          <div class="settings-item">
-            <div class="settings-icon si-warm">🔑</div>
-            <div class="settings-text">
-              <div class="settings-label">Change Password</div>
-              <div class="settings-desc">Last changed 30 days ago</div>
-            </div>
-            <div class="settings-right">›</div>
-          </div>
-        </div>
-
-        <!-- Appearance -->
-        <div class="sec-head"><span class="sec-title">Appearance</span></div>
-        <div class="settings-section">
-          <div class="settings-item" onclick="toggleTheme()">
-            <div class="settings-icon si-gold">🌙</div>
-            <div class="settings-text">
-              <div class="settings-label">Dark Mode</div>
-              <div class="settings-desc">Switch between light and dark</div>
-            </div>
-            <div class="toggle-switch on" id="dark-toggle"></div>
-          </div>
-          <div class="settings-item">
-            <div class="settings-icon si-blue">🎨</div>
-            <div class="settings-text">
-              <div class="settings-label">Colour Theme</div>
-              <div class="settings-desc">Ocean Blue or Terracotta</div>
-            </div>
-            <div class="settings-right">›</div>
-          </div>
-          <div class="settings-item">
-            <div class="settings-icon si-green">🔡</div>
-            <div class="settings-text">
-              <div class="settings-label">Font Size</div>
-              <div class="settings-desc">Normal</div>
-            </div>
-            <div class="settings-right">›</div>
-          </div>
-        </div>
-
-        <!-- Language -->
-        <div class="sec-head"><span class="sec-title">Language</span></div>
-        <div class="settings-section">
-          <div class="settings-item" style="flex-direction:column;align-items:flex-start;gap:12px">
-            <div style="font-size:13px;color:var(--text2)">Select your preferred language</div>
-            <div class="lang-grid" style="width:100%">
-              <div class="lang-btn active"><span class="lang-flag">🇬🇧</span>English</div>
-              <div class="lang-btn"><span class="lang-flag">🇫🇷</span>Français</div>
-              <div class="lang-btn"><span class="lang-flag">🇺🇬</span>Luganda</div>
-              <div class="lang-btn"><span class="lang-flag">🇷🇼</span>Kinyarwanda</div>
-              <div class="lang-btn"><span class="lang-flag">🇰🇪</span>Swahili</div>
-              <div class="lang-btn"><span class="lang-flag">🌍</span>More…</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Accessibility -->
-        <div class="sec-head"><span class="sec-title">Accessibility</span></div>
-        <div class="access-grid" style="margin-bottom:14px">
-          <div class="access-card on" onclick="this.classList.toggle('on')">
-            <div class="access-icon">👁️</div>
-            <div class="access-name">High Contrast</div>
-            <div class="access-desc">Boost colour contrast for clarity</div>
-          </div>
-          <div class="access-card" onclick="this.classList.toggle('on')">
-            <div class="access-icon">🔡</div>
-            <div class="access-name">Large Text</div>
-            <div class="access-desc">Increase font sizes throughout</div>
-          </div>
-          <div class="access-card" onclick="this.classList.toggle('on')">
-            <div class="access-icon">🔇</div>
-            <div class="access-name">Reduce Motion</div>
-            <div class="access-desc">Minimise animations</div>
-          </div>
-          <div class="access-card" onclick="this.classList.toggle('on')">
-            <div class="access-icon">🎙️</div>
-            <div class="access-name">Screen Reader</div>
-            <div class="access-desc">Optimise for VoiceOver / TalkBack</div>
-          </div>
-          <div class="access-card" onclick="this.classList.toggle('on')">
-            <div class="access-icon">🖐️</div>
-            <div class="access-name">Motor Assist</div>
-            <div class="access-desc">Larger tap targets</div>
-          </div>
-          <div class="access-card" onclick="this.classList.toggle('on')">
-            <div class="access-icon">🎨</div>
-            <div class="access-name">Colour Blind</div>
-            <div class="access-desc">Deuteranopia / Protanopia modes</div>
-          </div>
-        </div>
-
-        <!-- Notifications -->
-        <div class="sec-head"><span class="sec-title">Notifications</span></div>
-        <div class="settings-section">
-          <div class="settings-item">
-            <div class="settings-icon si-gold">🔔</div>
-            <div class="settings-text">
-              <div class="settings-label">Job Alerts</div>
-              <div class="settings-desc">New roles matching your profile</div>
-            </div>
-            <div class="toggle-switch on" onclick="this.classList.toggle('on')"></div>
-          </div>
-          <div class="settings-item">
-            <div class="settings-icon si-green">📚</div>
-            <div class="settings-text">
-              <div class="settings-label">Deadline Reminders</div>
-              <div class="settings-desc">Application & enrolment deadlines</div>
-            </div>
-            <div class="toggle-switch on" onclick="this.classList.toggle('on')"></div>
-          </div>
-          <div class="settings-item">
-            <div class="settings-icon si-purple">✨</div>
-            <div class="settings-text">
-              <div class="settings-label">Aura Score Updates</div>
-              <div class="settings-desc">When your score changes</div>
-            </div>
-            <div class="toggle-switch" onclick="this.classList.toggle('on')"></div>
-          </div>
-        </div>
-
-        <!-- Suggested upcoming features -->
-        <div class="sec-head"><span class="sec-title">✦ Suggested Future Features</span></div>
-        <div class="suggest-banner">
-          <div class="suggest-tag">Coming Soon</div>
-          <div class="suggest-title">Mentor Connect</div>
-          <div class="suggest-desc">Match with professionals in your target field for 1-on-1 guidance sessions</div>
-        </div>
-        <div class="suggest-banner" style="background:linear-gradient(135deg,#2a5a3a,#1a3d28)">
-          <div class="suggest-tag">Coming Soon</div>
-          <div class="suggest-title">AI Career Coach</div>
-          <div class="suggest-desc">Chat with an AI that knows your full profile and gives real-time advice</div>
-        </div>
-        <div class="suggest-banner" style="background:linear-gradient(135deg,#4a3010,#2d1c08)">
-          <div class="suggest-tag">Coming Soon</div>
-          <div class="suggest-title">Peer Study Groups</div>
-          <div class="suggest-desc">Connect with students in the same field and form study or project teams</div>
-        </div>
-        <div class="suggest-banner" style="background:linear-gradient(135deg,#2a1050,#1a0830)">
-          <div class="suggest-tag">Coming Soon</div>
-          <div class="suggest-title">Interview Simulator</div>
-          <div class="suggest-desc">Practice common interview questions for your target role with AI feedback</div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- ══════ SCREEN: PROFILE / SESSIONS ══════ -->
-    <div class="screen" id="screen-profile">
-      <div class="profile-hero">
-        <div class="avatar">A</div>
-        <div class="profile-name">Amara Diallo</div>
-        <div class="profile-type-badge">🎓 University Student</div>
-      </div>
-      <div class="screen-body">
-
-        <div class="aura-summary">
-          <div class="aura-top">
-            <div>
-              <div class="aura-label">✦ Aura Score</div>
-              <div class="aura-score">73</div>
-            </div>
-            <div class="aura-grade">Career Fit<br><strong>Creative Explorer</strong></div>
-          </div>
-          <div class="aura-desc-text">Strong creative + analytical blend. Best fit: UX Design, Brand Strategy, Product Management.</div>
-          <div class="aura-bar"><div class="aura-bar-fill"></div></div>
-        </div>
-
-        <div class="sec-head"><span class="sec-title">Active Sessions</span><span class="sec-more">Security ›</span></div>
-
-        <div class="session-card">
-          <div class="session-icon">📱</div>
-          <div class="session-info">
-            <div class="session-device">This Device — Android</div>
-            <div class="session-meta">Kampala, UG · Just now</div>
-          </div>
-          <div class="session-active-dot"></div>
-        </div>
-        <div class="session-card">
-          <div class="session-icon">💻</div>
-          <div class="session-info">
-            <div class="session-device">MacBook Pro</div>
-            <div class="session-meta">Kampala, UG · 2 hours ago</div>
-          </div>
-          <button class="session-logout-btn">Log out</button>
-        </div>
-        <div class="session-card">
-          <div class="session-icon">📱</div>
-          <div class="session-info">
-            <div class="session-device">iPhone 14</div>
-            <div class="session-meta">Nairobi, KE · Yesterday</div>
-          </div>
-          <button class="session-logout-btn">Log out</button>
-        </div>
-        <div class="session-card">
-          <div class="session-icon">🖥️</div>
-          <div class="session-info">
-            <div class="session-device">Windows PC</div>
-            <div class="session-meta">Unknown location · 5 days ago</div>
-          </div>
-          <button class="session-logout-btn" style="color:#ff4040;background:rgba(255,64,64,.1)">Log out</button>
-        </div>
-
-        <div style="margin:16px 0">
-          <div class="settings-section">
-            <div class="settings-item">
-              <div class="settings-icon si-red">🚪</div>
-              <div class="settings-text">
-                <div class="settings-label" style="color:#e05050">Log Out All Other Devices</div>
-                <div class="settings-desc">Keeps only this device signed in</div>
-              </div>
-              <div class="settings-right">›</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="sec-head"><span class="sec-title">✦ More Features</span></div>
-        <div class="suggest-banner">
-          <div class="suggest-tag">Coming Soon</div>
-          <div class="suggest-title">Offline Mode</div>
-          <div class="suggest-desc">Save jobs, courses and roadmaps to access without internet</div>
-        </div>
-        <div class="suggest-banner" style="background:linear-gradient(135deg,#1a4a5a,#0d2d38)">
-          <div class="suggest-tag">Coming Soon</div>
-          <div class="suggest-title">Multi-Profile Support</div>
-          <div class="suggest-desc">Switch between a student and adult profile in one account</div>
-        </div>
-
-      </div>
-    </div>
-
-  </div><!-- /screens -->
-
-  <!-- BOTTOM NAV -->
-  <div class="bottom-nav">
-    <div class="nav-item active" onclick="navTo('screen-who','nav-home')">
-      <span class="nav-ico">🏠</span><span>Home</span>
-    </div>
-    <div class="nav-item" onclick="navTo('screen-jobs','nav-jobs')">
-      <span class="nav-ico">💼</span><span>Jobs</span>
-    </div>
-    <div class="nav-item" onclick="navTo('screen-uni','nav-uni')">
-      <span class="nav-ico">🎓</span><span>Study</span>
-    </div>
-    <div class="nav-item" onclick="navTo('screen-settings','nav-settings')">
-      <span class="nav-ico">⚙️</span><span>Settings</span>
-    </div>
-    <div class="nav-item" onclick="navTo('screen-profile','nav-profile')">
-      <span class="nav-ico">👤</span><span>Profile</span>
-    </div>
-  </div>
-
-</div><!-- /app-chrome -->
+    </main>
+</div>
 
 <script>
-  const html = document.documentElement;
-  const navItems = document.querySelectorAll('.nav-item');
+    // NAVIGATION LOGIC
+    function showScreen(id) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        window.scrollTo(0,0);
+    }
 
-  function goTo(id) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-  }
+    // DYNAMIC SEARCH: COURSES
+    function filterCourses() {
+        let input = document.getElementById('courseSearch').value.toLowerCase();
+        let courses = document.querySelectorAll('.course-item');
+        courses.forEach(c => {
+            let name = c.getAttribute('data-name').toLowerCase();
+            c.style.display = name.includes(input) ? "block" : "none";
+        });
+    }
 
-  function navTo(screenId, navId) {
-    goTo(screenId);
-    navItems.forEach(n => n.classList.remove('active'));
-    event.currentTarget.classList.add('active');
-  }
+    // DYNAMIC SEARCH: JOBS
+    function filterJobs() {
+        let input = document.getElementById('jobSearch').value.toLowerCase();
+        let jobs = document.querySelectorAll('.job-item');
+        jobs.forEach(j => {
+            let name = j.getAttribute('data-name').toLowerCase();
+            j.style.display = name.includes(input) ? "block" : "none";
+        });
+    }
 
-  function setPalette(p) {
-    html.dataset.palette = p;
-    document.querySelectorAll('.controls-bar .toggle-pill:first-of-type .toggle-btn').forEach(b => {
-      b.classList.toggle('active', b.textContent.toLowerCase().includes(p === 'blue' ? 'blue' : 'terra'));
-    });
-  }
+    // PALETTE CYCLING
+    function cyclePalette() {
+        const body = document.body;
+        const current = body.getAttribute('data-palette');
+        body.setAttribute('data-palette', current === 'blue' ? 'red' : 'blue');
+    }
 
-  function setTheme(t) {
-    html.dataset.theme = t;
-    const tog = document.getElementById('dark-toggle');
-    if(tog) tog.classList.toggle('on', t === 'dark');
-    document.querySelectorAll('.controls-bar .toggle-pill').forEach((pill, i) => {
-      if(i === 1) pill.querySelectorAll('.toggle-btn').forEach(b => {
-        b.classList.toggle('active', (t==='dark' && b.textContent.includes('🌙')) || (t==='light' && b.textContent.includes('☀️')));
-      });
-    });
-  }
-
-  function toggleTheme() {
-    const cur = html.dataset.theme;
-    setTheme(cur === 'dark' ? 'light' : 'dark');
-  }
-
-  function updateBudget(val) {
-    const v = parseInt(val);
-    document.getElementById('budget-val').textContent = 'UGX ' + (v >= 1000000 ? (v/1000000).toFixed(1)+'M' : (v/1000).toFixed(0)+'k');
-  }
-  function updateBudget2(val) {
-    const v = parseInt(val);
-    document.getElementById('budget-val2').textContent = 'UGX ' + (v >= 1000000 ? (v/1000000).toFixed(1)+'M' : (v/1000).toFixed(0)+'k');
-  }
-
-  // chip interaction
-  document.querySelectorAll('.chip').forEach(c => {
-    c.addEventListener('click', function() {
-      this.closest('.chip-row').querySelectorAll('.chip').forEach(x => x.classList.remove('active'));
-      this.classList.add('active');
-    });
-  });
-
-  // lang btn interaction
-  document.querySelectorAll('.lang-btn').forEach(b => {
-    b.addEventListener('click', function() {
-      document.querySelectorAll('.lang-btn').forEach(x => x.classList.remove('active'));
-      this.classList.add('active');
-    });
-  });
-
-  // palette control buttons sync
-  document.querySelectorAll('.controls-bar .toggle-pill').forEach((pill, idx) => {
-    pill.querySelectorAll('.toggle-btn').forEach(b => {
-      b.addEventListener('click', function() {
-        pill.querySelectorAll('.toggle-btn').forEach(x => x.classList.remove('active'));
-        this.classList.add('active');
-      });
-    });
-  });
+    function toggleMode() {
+        const body = document.body;
+        const current = body.getAttribute('data-theme');
+        body.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+    }
 </script>
 </body>
 </html>
