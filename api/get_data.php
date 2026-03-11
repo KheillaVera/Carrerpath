@@ -1,17 +1,17 @@
 <?php
+header('Content-Type: application/json');
 include '../includes/db_connect.php';
 
-$type = $_GET['type'] ?? 'jobs'; // Can be 'jobs' or 'courses'
+$type = $_GET['type'] ?? 'jobs'; 
 $search = $_GET['search'] ?? '';
 
 if ($type === 'jobs') {
-    $stmt = $pdo->prepare("SELECT * FROM jobs WHERE title LIKE ? OR company LIKE ?");
-    $stmt->execute(["%$search%", "%$search%"]);
+    $query = "SELECT title, company, location, salary, job_type, match_rate FROM jobs WHERE title LIKE :s OR company LIKE :s";
 } else {
-    $stmt = $pdo->prepare("SELECT * FROM courses WHERE course_name LIKE ?");
-    $stmt->execute(["%$search%"]);
+    $query = "SELECT course_name, university, duration as location, avg_entry_grade as salary, 'Degree' as job_type, match_rate FROM courses WHERE course_name LIKE :s";
 }
 
-$results = $stmt->fetchAll();
-echo json_encode($results);
+$stmt = $pdo->prepare($query);
+$stmt->execute(['s' => "%$search%"]);
+echo json_encode($stmt->fetchAll());
 ?>
