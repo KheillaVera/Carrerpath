@@ -1,0 +1,363 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * PathAura design system.
+ *
+ * One source of truth for colour, elevation, motion and the shared component
+ * classes. Screens compose these primitives rather than styling themselves, so
+ * light and dark mode, focus states and spacing stay consistent everywhere.
+ *
+ * Colours are space-separated RGB triples so Tailwind opacity modifiers work
+ * (`bg-scrim/60`, `border-accent/30`). Light is the default; the `dark` class on
+ * <html> swaps the palette.
+ */
+@layer base {
+  :root {
+    /* Neutrals — warm-tinted greys, not pure grey and not brown. */
+    --c-surface: 251 250 249;
+    --c-panel: 255 255 255;
+    --c-elevated: 245 243 241;
+    --c-sunken: 240 237 234;
+
+    --c-ink: 24 22 20;
+    --c-ink-soft: 68 62 57;
+    --c-muted: 119 111 104;
+    --c-faint: 158 149 141;
+
+    --c-line: 233 229 224;
+    --c-line-strong: 214 207 200;
+
+    --c-accent: 143 59 38;
+    --c-accent-soft: 251 233 227;
+    --c-accent-contrast: 255 255 255;
+
+    --c-scrim: 28 20 16;
+    --c-shadow: 44 30 22;
+
+    --c-danger: 176 38 27;
+    --c-danger-bg: 254 242 241;
+    --c-danger-line: 250 209 205;
+
+    --c-warn: 150 62 10;
+    --c-warn-bg: 254 247 234;
+    --c-warn-line: 247 218 154;
+
+    --c-success: 12 100 62;
+    --c-success-bg: 236 249 242;
+    --c-success-line: 172 226 197;
+
+    --c-info: 32 87 132;
+    --c-info-bg: 238 246 252;
+    --c-info-line: 186 214 238;
+
+    color-scheme: light;
+  }
+
+  .dark {
+    --c-surface: 15 14 13;
+    --c-panel: 22 20 19;
+    --c-elevated: 30 27 25;
+    --c-sunken: 12 11 10;
+
+    --c-ink: 246 244 242;
+    --c-ink-soft: 215 210 205;
+    --c-muted: 152 144 137;
+    --c-faint: 114 107 100;
+
+    --c-line: 40 37 34;
+    --c-line-strong: 56 51 47;
+
+    --c-accent: 233 145 112;
+    --c-accent-soft: 47 30 24;
+    --c-accent-contrast: 26 13 8;
+
+    --c-scrim: 6 5 4;
+    --c-shadow: 0 0 0;
+
+    --c-danger: 248 158 145;
+    --c-danger-bg: 47 24 21;
+    --c-danger-line: 79 39 33;
+
+    --c-warn: 240 187 106;
+    --c-warn-bg: 44 32 14;
+    --c-warn-line: 76 55 24;
+
+    --c-success: 122 216 165;
+    --c-success-bg: 17 38 28;
+    --c-success-line: 33 68 49;
+
+    --c-info: 141 190 232;
+    --c-info-bg: 18 30 43;
+    --c-info-line: 34 55 77;
+
+    color-scheme: dark;
+  }
+
+  html {
+    font-family: theme('fontFamily.sans');
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply min-h-screen bg-surface text-ink antialiased;
+    font-feature-settings: 'cv02' 1, 'cv03' 1, 'cv04' 1, 'cv11' 1;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Headings tighten as they grow; the scale in tailwind.config handles tracking. */
+  h1, h2, h3, h4 {
+    @apply text-ink font-semibold;
+  }
+
+  ::selection {
+    background-color: rgb(var(--c-accent) / 0.18);
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-accent/60 ring-offset-2;
+    --tw-ring-offset-color: rgb(var(--c-surface));
+  }
+
+  /* Quiet, theme-aware scrollbars. */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(var(--c-line-strong)) transparent;
+  }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background-color: rgb(var(--c-line-strong));
+    border-radius: 9999px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover { background-color: rgb(var(--c-faint)); }
+
+  /* Honour the operating system's reduced-motion setting. */
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* ---------- Layout helpers ---------- */
+  .container-app { @apply mx-auto w-full max-w-[80rem] px-5 sm:px-6 lg:px-8; }
+  .container-prose { @apply mx-auto w-full max-w-3xl px-5 sm:px-6; }
+  .stack { @apply flex flex-col gap-6; }
+  .section-label { @apply text-2xs font-semibold uppercase tracking-[0.12em] text-faint; }
+  .eyebrow { @apply inline-flex items-center gap-1.5 text-xs font-medium text-accent; }
+
+  /* Skip link for keyboard users — visible only when focused. */
+  .skip-link {
+    @apply sr-only rounded-md bg-panel px-4 py-2 text-sm font-medium text-ink shadow-lg;
+  }
+  .skip-link:focus {
+    @apply not-sr-only fixed left-4 top-4 z-[100] border border-line;
+  }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    @apply inline-flex select-none items-center justify-center gap-1.5 whitespace-nowrap rounded-md
+           px-3.5 text-sm font-medium leading-none transition-all duration-120 ease-out
+           disabled:pointer-events-none disabled:opacity-50;
+    height: 2.25rem;
+  }
+  .btn:active:not(:disabled) { transform: translateY(0.5px); }
+
+  .btn-primary {
+    @apply btn bg-accent text-accent-contrast shadow-xs
+           hover:brightness-110 active:brightness-95;
+  }
+  .btn-secondary {
+    @apply btn border border-line-strong bg-panel text-ink shadow-xs
+           hover:border-faint hover:bg-elevated;
+  }
+  .btn-ghost { @apply btn text-ink-soft hover:bg-elevated hover:text-ink; }
+  .btn-danger {
+    @apply btn border border-danger-line bg-danger-bg text-danger hover:brightness-95;
+  }
+  .btn-sm { height: 1.875rem; @apply gap-1 rounded px-2.5 text-xs; }
+  .btn-lg { height: 2.625rem; @apply gap-2 px-5 text-base; }
+  /* Square button that holds a single icon. */
+  .btn-icon { @apply px-0; width: 2.25rem; }
+  .btn-icon.btn-sm { width: 1.875rem; }
+
+  /* ---------- Forms ---------- */
+  .label { @apply mb-1.5 block text-sm font-medium text-ink-soft; }
+  .hint { @apply mt-1.5 text-xs text-muted; }
+  .field-error { @apply mt-1.5 flex items-center gap-1 text-xs font-medium text-danger; }
+
+  .input {
+    @apply block w-full rounded-md border border-line-strong bg-panel px-3 text-sm text-ink
+           shadow-xs transition-all duration-120 ease-out
+           placeholder:text-faint
+           hover:border-faint
+           focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20
+           disabled:cursor-not-allowed disabled:bg-elevated disabled:text-muted;
+    min-height: 2.25rem;
+    padding-top: 0.4375rem;
+    padding-bottom: 0.4375rem;
+  }
+  textarea.input { @apply leading-relaxed; padding-top: 0.5rem; }
+  select.input {
+    @apply cursor-pointer appearance-none bg-no-repeat pr-9;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23968f88' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-position: right 0.625rem center;
+    background-size: 1rem;
+  }
+  input[type='checkbox'], input[type='radio'] {
+    @apply h-4 w-4 shrink-0 cursor-pointer rounded border-line-strong text-accent
+           transition-colors duration-120
+           focus:ring-2 focus:ring-accent/30 focus:ring-offset-0;
+    accent-color: rgb(var(--c-accent));
+  }
+  input[type='date'].input, input[type='datetime-local'].input { @apply cursor-text; }
+  .dark input[type='date']::-webkit-calendar-picker-indicator,
+  .dark input[type='datetime-local']::-webkit-calendar-picker-indicator { filter: invert(0.8); }
+
+  /* ---------- Surfaces ---------- */
+  /* Borders do the work; shadows are reserved for things that actually float. */
+  .card { @apply rounded-lg border border-line bg-panel; }
+  .card-body { @apply p-5; }
+  .card-interactive {
+    @apply card transition-all duration-180 ease-out
+           hover:border-line-strong hover:shadow-sm
+           focus-within:border-accent/40;
+  }
+  .card-raised { @apply rounded-lg border border-line bg-panel shadow-md; }
+  .panel-header { @apply flex items-center justify-between gap-3 border-b border-line px-5 py-3.5; }
+  .divider { @apply h-px w-full bg-line; }
+
+  /* ---------- Badges & status ---------- */
+  .badge {
+    @apply inline-flex items-center gap-1 rounded px-2 py-0.5 text-xs font-medium leading-5;
+  }
+  .badge-info { @apply badge bg-accent-soft text-accent; }
+  .badge-muted { @apply badge bg-elevated text-ink-soft; }
+  .badge-outline { @apply badge border border-line text-muted; }
+  .badge-warn { @apply badge bg-warn-bg text-warn; }
+  .badge-success { @apply badge bg-success-bg text-success; }
+  .badge-danger { @apply badge bg-danger-bg text-danger; }
+  .badge-neutral { @apply badge bg-info-bg text-info; }
+  .status-dot { @apply h-1.5 w-1.5 shrink-0 rounded-full bg-current; }
+
+  /* Filter pills. */
+  .chip {
+    @apply inline-flex cursor-pointer select-none items-center gap-1.5 rounded-full border border-line
+           bg-panel px-3 py-1 text-xs font-medium text-ink-soft transition-all duration-120 ease-out
+           hover:border-line-strong hover:bg-elevated;
+  }
+  .chip-active {
+    @apply border-accent/40 bg-accent-soft text-accent hover:border-accent/60 hover:bg-accent-soft;
+  }
+
+  /* ---------- Alerts ---------- */
+  .alert { @apply flex items-start gap-2.5 rounded-md border px-3.5 py-3 text-sm; }
+  .alert-danger { @apply alert border-danger-line bg-danger-bg text-danger; }
+  .alert-warn { @apply alert border-warn-line bg-warn-bg text-warn; }
+  .alert-success { @apply alert border-success-line bg-success-bg text-success; }
+  .alert-info { @apply alert border-info-line bg-info-bg text-info; }
+
+  /* ---------- Tables ---------- */
+  .table-wrap { @apply w-full overflow-x-auto rounded-lg border border-line bg-panel; }
+  .table { @apply w-full border-collapse text-sm; }
+  .table thead th {
+    @apply whitespace-nowrap border-b border-line bg-elevated/60 px-4 py-2.5 text-left text-2xs
+           font-semibold uppercase tracking-[0.08em] text-muted;
+  }
+  .table tbody td { @apply border-b border-line px-4 py-3 align-middle text-ink-soft; }
+  .table tbody tr:last-child td { @apply border-b-0; }
+  .table tbody tr { @apply transition-colors duration-120; }
+  .table tbody tr:hover { @apply bg-elevated/50; }
+  .table .cell-primary { @apply font-medium text-ink; }
+
+  /* ---------- Navigation ---------- */
+  .nav-item {
+    @apply relative flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-sm font-medium
+           text-muted transition-all duration-120 ease-out
+           hover:bg-elevated hover:text-ink;
+  }
+  .nav-item-active {
+    @apply bg-accent-soft text-accent hover:bg-accent-soft hover:text-accent;
+  }
+  .nav-item-active::before {
+    content: '';
+    @apply absolute left-0 top-1/2 h-4 w-0.5 -translate-y-1/2 rounded-full bg-accent;
+  }
+  .nav-group { @apply mt-5 first:mt-0; }
+  .nav-group-label { @apply mb-1.5 px-2.5 text-2xs font-semibold uppercase tracking-[0.1em] text-faint; }
+  .top-link {
+    @apply relative rounded-md px-2.5 py-1.5 text-sm font-medium text-muted
+           transition-colors duration-120 hover:text-ink;
+  }
+  .top-link-active { @apply text-ink; }
+
+  /* ---------- Menus, dialogs, toasts ---------- */
+  .menu {
+    @apply z-50 min-w-[11rem] overflow-hidden rounded-lg border border-line bg-panel p-1 shadow-overlay;
+  }
+  .menu-item {
+    @apply flex w-full cursor-pointer items-center gap-2 rounded px-2.5 py-1.5 text-left text-sm
+           text-ink-soft transition-colors duration-120 hover:bg-elevated hover:text-ink;
+  }
+  .menu-label { @apply px-2.5 py-1.5 text-xs text-muted; }
+
+  .toast {
+    @apply pointer-events-auto flex items-start gap-2.5 rounded-lg border border-line bg-panel
+           px-3.5 py-3 text-sm shadow-overlay;
+  }
+
+  /* ---------- Loading ---------- */
+  .skeleton {
+    @apply rounded bg-elevated;
+    background-image: linear-gradient(
+      90deg,
+      rgb(var(--c-elevated)) 0%,
+      rgb(var(--c-line)) 50%,
+      rgb(var(--c-elevated)) 100%
+    );
+    background-size: 200% 100%;
+    @apply animate-shimmer;
+  }
+
+  /* ---------- Misc ---------- */
+  .icon-tile {
+    @apply inline-flex h-9 w-9 items-center justify-center rounded-md border border-line
+           bg-elevated text-ink-soft;
+  }
+  .icon-tile-accent { @apply border-transparent bg-accent-soft text-accent; }
+  .link { @apply font-medium text-accent underline-offset-2 transition-colors hover:underline; }
+  .kbd {
+    @apply inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded border border-line
+           bg-elevated px-1 font-mono text-2xs text-muted;
+  }
+  /* Hairline grid used for feature sections — borders instead of card soup. */
+  .grid-lines { @apply divide-line border-line; }
+}
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+  .text-pretty { text-wrap: pretty; }
+  .glass {
+    background-color: rgb(var(--c-panel) / 0.72);
+    backdrop-filter: saturate(180%) blur(12px);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+  }
+  /* Staggers list entrances without a JS animation library. */
+  .stagger > * { animation: fade-up 240ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .stagger > *:nth-child(1) { animation-delay: 0ms; }
+  .stagger > *:nth-child(2) { animation-delay: 40ms; }
+  .stagger > *:nth-child(3) { animation-delay: 80ms; }
+  .stagger > *:nth-child(4) { animation-delay: 120ms; }
+  .stagger > *:nth-child(5) { animation-delay: 160ms; }
+  .stagger > *:nth-child(6) { animation-delay: 200ms; }
+  .stagger > *:nth-child(n + 7) { animation-delay: 240ms; }
+}
