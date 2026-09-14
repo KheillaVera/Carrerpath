@@ -17,4 +17,8 @@ if not exist "%MYSQLD%" (
 echo Starting PathAura database on port 3310...
 echo Data directory: %DATADIR%
 echo.
-"%MYSQLD%" --datadir="%DATADIR%" --port=3310 --console
+REM Lean memory settings — this machine runs close to full, and the default
+REM buffers are far larger than a development database needs.
+"%MYSQLD%" --datadir="%DATADIR%" --port=3310 ^
+  --innodb-buffer-pool-size=32M --key-buffer-size=8M --max-connections=20 ^
+  --performance-schema=OFF --table-open-cache=64 --tmp-table-size=8M --console
