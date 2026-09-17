@@ -5,6 +5,7 @@ const validate = require('../middleware/validate');
 const { requireRole } = require('../middleware/authorize');
 const { createJobValidator, updateJobValidator, jobStatusValidator } = require('../validators/jobsValidators');
 const jobsController = require('../controllers/jobsController');
+const { idParam } = require('../validators/common');
 
 const router = express.Router();
 
@@ -14,19 +15,19 @@ router.get('/filters', jobsController.listFilters);
 
 // Employer views of their own postings, including drafts. Literal paths first.
 router.get('/mine', authenticate, jobsController.listMine);
-router.get('/mine/:id', authenticate, jobsController.getMine);
+router.get('/mine/:id', authenticate, idParam('id'), validate, jobsController.getMine);
 
 // Saved opportunities (job seekers).
 router.get('/saved', authenticate, jobsController.listSaved);
 
 router.post('/', authenticate, requireRole('employer', 'admin'), createJobValidator, validate, jobsController.create);
-router.patch('/:id', authenticate, updateJobValidator, validate, jobsController.update);
-router.patch('/:id/status', authenticate, jobStatusValidator, validate, jobsController.setStatus);
-router.delete('/:id', authenticate, jobsController.remove);
+router.patch('/:id', authenticate, idParam('id'), updateJobValidator, validate, jobsController.update);
+router.patch('/:id/status', authenticate, idParam('id'), jobStatusValidator, validate, jobsController.setStatus);
+router.delete('/:id', authenticate, idParam('id'), validate, jobsController.remove);
 
-router.post('/:id/save', authenticate, jobsController.save);
-router.delete('/:id/save', authenticate, jobsController.unsave);
+router.post('/:id/save', authenticate, idParam('id'), validate, jobsController.save);
+router.delete('/:id/save', authenticate, idParam('id'), validate, jobsController.unsave);
 
-router.get('/:id', optionalAuthenticate, jobsController.getPublic);
+router.get('/:id', optionalAuthenticate, idParam('id'), validate, jobsController.getPublic);
 
 module.exports = router;

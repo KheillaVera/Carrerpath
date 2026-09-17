@@ -1,5 +1,6 @@
 const { body } = require('express-validator');
 const { COMPANY_SIZES, VERIFICATION_STATUSES } = require('../services/companiesService');
+const { optionalUrl, optionalEmail, optionalPhone, idParam } = require('./common');
 
 const companyBody = [
   body('name').optional().isString().trim().isLength({ min: 2, max: 200 }),
@@ -8,12 +9,12 @@ const companyBody = [
   body('industry').optional({ nullable: true }).isString().isLength({ max: 120 }),
   body('companySize').optional({ nullable: true }).isIn(COMPANY_SIZES),
   body('foundedYear').optional({ nullable: true }).isInt({ min: 1800, max: 2100 }),
-  body('websiteUrl').optional({ nullable: true }).isString().isLength({ max: 255 }),
-  body('logoUrl').optional({ nullable: true }).isString().isLength({ max: 255 }),
+  optionalUrl('websiteUrl'),
+  optionalUrl('logoUrl'),
   body('location').optional({ nullable: true }).isString().isLength({ max: 150 }),
   body('district').optional({ nullable: true }).isString().isLength({ max: 100 }),
-  body('contactEmail').optional({ nullable: true }).isString().isLength({ max: 255 }),
-  body('contactPhone').optional({ nullable: true }).isString().isLength({ max: 30 }),
+  optionalEmail('contactEmail'),
+  optionalPhone('contactPhone'),
 ];
 
 const createCompanyValidator = [

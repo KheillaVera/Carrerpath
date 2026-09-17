@@ -7,6 +7,7 @@ import PageHeader from '../../components/PageHeader';
 import { useToast } from '../../components/Toast';
 import { SkeletonForm } from '../../components/Skeleton';
 import ErrorAlert from '../../components/ErrorAlert';
+import { urlRule } from '../../services/validation';
 
 const WORK_MODES = [
   { value: 'any', label: 'Any' },
@@ -143,17 +144,20 @@ export default function ProfilePage() {
               <div>
                 <label className="label" htmlFor="githubUrl">GitHub URL</label>
                 <input id="githubUrl" className="input" placeholder="https://github.com/…"
-                  {...register('jobSeeker.githubUrl')} />
+                  {...register('jobSeeker.githubUrl', urlRule)} />
+                {errors.jobSeeker?.githubUrl && <p className="field-error">{errors.jobSeeker.githubUrl.message}</p>}
               </div>
               <div>
                 <label className="label" htmlFor="linkedinUrl">LinkedIn URL</label>
                 <input id="linkedinUrl" className="input" placeholder="https://linkedin.com/in/…"
-                  {...register('jobSeeker.linkedinUrl')} />
+                  {...register('jobSeeker.linkedinUrl', urlRule)} />
+                {errors.jobSeeker?.linkedinUrl && <p className="field-error">{errors.jobSeeker.linkedinUrl.message}</p>}
               </div>
               <div className="md:col-span-2">
                 <label className="label" htmlFor="portfolioUrl">Portfolio URL</label>
                 <input id="portfolioUrl" className="input" placeholder="https://…"
-                  {...register('jobSeeker.portfolioUrl')} />
+                  {...register('jobSeeker.portfolioUrl', urlRule)} />
+                {errors.jobSeeker?.portfolioUrl && <p className="field-error">{errors.jobSeeker.portfolioUrl.message}</p>}
               </div>
             </div>
           </section>

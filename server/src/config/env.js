@@ -21,6 +21,8 @@ function int(key, fallback) {
 }
 
 const env = {
+  // Set TRUST_PROXY=true only when the API genuinely sits behind a reverse proxy.
+  trustProxy: String(process.env.TRUST_PROXY || '').toLowerCase() === 'true',
   nodeEnv: process.env.NODE_ENV || 'development',
   port: int('PORT', 4000),
   clientOrigin: process.env.CLIENT_ORIGIN || 'http://localhost:5173',

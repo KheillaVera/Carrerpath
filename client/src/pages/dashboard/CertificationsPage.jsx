@@ -9,6 +9,8 @@ import { useToast } from '../../components/Toast';
 import { SkeletonCards } from '../../components/Skeleton';
 import ErrorAlert from '../../components/ErrorAlert';
 import Modal from '../../components/Modal';
+import { safeUrl } from '../../services/url';
+import { urlRule } from '../../services/validation';
 
 const STATUS_STYLE = {
   pending: 'badge-warn',
@@ -73,7 +75,8 @@ function CertificationForm({ initial, onCancel, onSaved }) {
         </div>
         <div>
           <label className="label" htmlFor="verificationUrl">Verification URL</label>
-          <input id="verificationUrl" className="input" placeholder="https://…" {...register('verificationUrl')} />
+          <input id="verificationUrl" className="input" placeholder="https://…" {...register('verificationUrl', urlRule)} />
+          {errors.verificationUrl && <p className="field-error">{errors.verificationUrl.message}</p>}
         </div>
       </div>
       <p className="text-xs text-muted">
@@ -173,7 +176,7 @@ export default function CertificationsPage() {
                   {it.credentialId && <> · ID {it.credentialId}</>}
                 </div>
                 {it.verificationUrl && (
-                  <a href={it.verificationUrl} target="_blank" rel="noreferrer"
+                  <a href={safeUrl(it.verificationUrl)} target="_blank" rel="noopener noreferrer"
                     className="mt-1 inline-flex items-center gap-1 text-xs text-accent hover:underline">
                     <ExternalLink className="h-3.5 w-3.5" aria-hidden /> Verification link
                   </a>

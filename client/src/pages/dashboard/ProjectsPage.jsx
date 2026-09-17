@@ -9,6 +9,8 @@ import { useToast } from '../../components/Toast';
 import { SkeletonCards } from '../../components/Skeleton';
 import ErrorAlert from '../../components/ErrorAlert';
 import Modal from '../../components/Modal';
+import { safeUrl } from '../../services/url';
+import { urlRule } from '../../services/validation';
 
 const PROJECT_TYPES = [
   { value: 'personal', label: 'Personal' },
@@ -45,12 +47,12 @@ function ProjectCard({ project, onEdit, onDelete }) {
       {(project.githubUrl || project.liveDemoUrl) && (
         <div className="mt-3 flex flex-wrap gap-3 text-xs">
           {project.githubUrl && (
-            <a href={project.githubUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-accent hover:underline">
+            <a href={safeUrl(project.githubUrl)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-accent hover:underline">
               <Github className="h-3.5 w-3.5" aria-hidden /> Code
             </a>
           )}
           {project.liveDemoUrl && (
-            <a href={project.liveDemoUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-accent hover:underline">
+            <a href={safeUrl(project.liveDemoUrl)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-accent hover:underline">
               <ExternalLink className="h-3.5 w-3.5" aria-hidden /> Live demo
             </a>
           )}
@@ -134,11 +136,13 @@ function ProjectForm({ initial, catalogue, onCancel, onSaved }) {
         </div>
         <div>
           <label className="label" htmlFor="githubUrl">GitHub</label>
-          <input id="githubUrl" className="input" placeholder="https://github.com/…" {...register('githubUrl')} />
+          <input id="githubUrl" className="input" placeholder="https://github.com/…" {...register('githubUrl', urlRule)} />
+          {errors.githubUrl && <p className="field-error">{errors.githubUrl.message}</p>}
         </div>
         <div className="col-span-2">
           <label className="label" htmlFor="liveDemoUrl">Live demo</label>
-          <input id="liveDemoUrl" className="input" placeholder="https://…" {...register('liveDemoUrl')} />
+          <input id="liveDemoUrl" className="input" placeholder="https://…" {...register('liveDemoUrl', urlRule)} />
+          {errors.liveDemoUrl && <p className="field-error">{errors.liveDemoUrl.message}</p>}
         </div>
       </div>
 

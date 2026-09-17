@@ -1,5 +1,6 @@
 const authService = require('../services/authService');
 const asyncHandler = require('../utils/asyncHandler');
+const { recordFailure, recordSuccess } = require('../middleware/loginThrottle');
 
 const register = asyncHandler(async (req, res) => {
   const { email, password, fullName, role, phone } = req.body;
@@ -9,8 +10,15 @@ const register = asyncHandler(async (req, res) => {
 
 const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  const { user, token } = await authService.login({ email, password });
-  res.json({ user, token });
+  try {
+    const { user, token } = await authService.login({ email, password });
+    recordSuccess(email);
+    res.json({ user, token });
+  } catch (err) {
+    // Only a rejected credential counts towards the lockout, not a server fault.
+    if (err.status === 401) recordFailure(email);
+    throw err;
+  }
 });
 
 const logout = asyncHandler(async (_req, res) => {

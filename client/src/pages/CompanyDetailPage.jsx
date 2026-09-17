@@ -9,6 +9,7 @@ import EmptyState from '../components/EmptyState';
 import ErrorAlert from '../components/ErrorAlert';
 import Avatar from '../components/Avatar';
 import Skeleton, { SkeletonText } from '../components/Skeleton';
+import { safeUrl } from '../services/url';
 
 function Meta({ icon: Icon, children }) {
   if (!children) return null;
@@ -93,7 +94,7 @@ export default function CompanyDetailPage() {
               <Meta icon={Users}>{company.companySize ? `${company.companySize} employees` : null}</Meta>
               <Meta icon={Calendar}>{company.foundedYear ? `Founded ${company.foundedYear}` : null}</Meta>
               {company.websiteUrl && (
-                <a href={company.websiteUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-sm text-accent hover:underline">
+                <a href={safeUrl(company.websiteUrl)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-sm text-accent hover:underline">
                   <Globe className="h-4 w-4" aria-hidden /> Website
                 </a>
               )}

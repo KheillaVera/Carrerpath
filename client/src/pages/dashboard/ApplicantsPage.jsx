@@ -13,6 +13,7 @@ import Modal from '../../components/Modal';
 import Avatar from '../../components/Avatar';
 import StatusPill from '../../components/StatusPill';
 import { SkeletonTable } from '../../components/Skeleton';
+import { safeUrl } from '../../services/url';
 
 const EMPLOYER_STATUSES = [
   { value: 'submitted', label: 'Submitted' },
@@ -105,12 +106,12 @@ function EvidencePanel({ data }) {
               {p.description && <p className="mt-1 line-clamp-2 text-xs text-muted">{p.description}</p>}
               <div className="mt-2 flex gap-3 text-xs">
                 {p.githubUrl && (
-                  <a className="link inline-flex items-center gap-1" href={p.githubUrl} target="_blank" rel="noreferrer">
+                  <a className="link inline-flex items-center gap-1" href={safeUrl(p.githubUrl)} target="_blank" rel="noopener noreferrer">
                     Code <ExternalLink className="h-3 w-3" aria-hidden />
                   </a>
                 )}
                 {p.liveDemoUrl && (
-                  <a className="link inline-flex items-center gap-1" href={p.liveDemoUrl} target="_blank" rel="noreferrer">
+                  <a className="link inline-flex items-center gap-1" href={safeUrl(p.liveDemoUrl)} target="_blank" rel="noopener noreferrer">
                     Demo <ExternalLink className="h-3 w-3" aria-hidden />
                   </a>
                 )}

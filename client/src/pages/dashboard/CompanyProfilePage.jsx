@@ -10,6 +10,7 @@ import PageHeader from '../../components/PageHeader';
 import ErrorAlert from '../../components/ErrorAlert';
 import Avatar from '../../components/Avatar';
 import { SkeletonForm } from '../../components/Skeleton';
+import { urlRule, emailRule, phoneRule } from '../../services/validation';
 
 const COMPANY_SIZES = ['1-10', '11-50', '51-200', '201-500', '500+'];
 
@@ -219,7 +220,8 @@ export default function CompanyProfilePage() {
                 </div>
                 <div>
                   <label className="label" htmlFor="websiteUrl">Website</label>
-                  <input id="websiteUrl" className="input" placeholder="https://…" {...register('websiteUrl')} />
+                  <input id="websiteUrl" className="input" placeholder="https://…" {...register('websiteUrl', urlRule)} />
+                  {errors.websiteUrl && <p className="field-error">{errors.websiteUrl.message}</p>}
                 </div>
                 <div>
                   <label className="label" htmlFor="location">Location</label>
@@ -236,11 +238,13 @@ export default function CompanyProfilePage() {
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
                   <label className="label" htmlFor="contactEmail">Contact email</label>
-                  <input id="contactEmail" className="input" placeholder="jobs@company.rw" {...register('contactEmail')} />
+                  <input id="contactEmail" className="input" placeholder="jobs@company.rw" {...register('contactEmail', emailRule)} />
+                  {errors.contactEmail && <p className="field-error">{errors.contactEmail.message}</p>}
                 </div>
                 <div>
                   <label className="label" htmlFor="contactPhone">Contact phone</label>
-                  <input id="contactPhone" className="input" {...register('contactPhone')} />
+                  <input id="contactPhone" className="input" {...register('contactPhone', phoneRule)} />
+                  {errors.contactPhone && <p className="field-error">{errors.contactPhone.message}</p>}
                 </div>
               </div>
             </FormSection>

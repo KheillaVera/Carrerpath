@@ -10,6 +10,7 @@ import ErrorAlert from '../../components/ErrorAlert';
 import StatusPill from '../../components/StatusPill';
 import Avatar from '../../components/Avatar';
 import { SkeletonCards } from '../../components/Skeleton';
+import { safeUrl } from '../../services/url';
 
 const MODE_ICON = { online: Video, onsite: MapPin, phone: Phone };
 const MODE_LABEL = { online: 'Online', onsite: 'On-site', phone: 'Phone' };
@@ -76,7 +77,7 @@ function InterviewCard({ interview, isEmployer, onSetStatus, busy }) {
 
           <div className="mt-4 flex flex-wrap items-center gap-2">
             {interview.meetingUrl && interview.status === 'scheduled' && (
-              <a href={interview.meetingUrl} target="_blank" rel="noreferrer" className="btn-primary btn-sm">
+              <a href={safeUrl(interview.meetingUrl)} target="_blank" rel="noopener noreferrer" className="btn-primary btn-sm">
                 Join <ExternalLink className="h-3.5 w-3.5" aria-hidden />
               </a>
             )}

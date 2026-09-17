@@ -1,6 +1,7 @@
 const { body } = require('express-validator');
 const { EMPLOYER_STATUSES } = require('../services/applicationsService');
 const { INTERVIEW_MODES, INTERVIEW_STATUSES } = require('../services/interviewsService');
+const { optionalUrl } = require('./common');
 
 const applyValidator = [
   body('jobId').isInt({ min: 1 }).withMessage('A job posting is required.'),
@@ -19,7 +20,7 @@ const scheduleInterviewValidator = [
   body('durationMinutes').optional().isInt({ min: 5, max: 480 }),
   body('mode').optional().isIn(INTERVIEW_MODES),
   body('location').optional({ nullable: true }).isString().isLength({ max: 255 }),
-  body('meetingUrl').optional({ nullable: true }).isString().isLength({ max: 255 }),
+  optionalUrl('meetingUrl'),
   body('note').optional({ nullable: true }).isString().isLength({ max: 1000 }),
 ];
 
@@ -29,7 +30,7 @@ const updateInterviewValidator = [
   body('mode').optional().isIn(INTERVIEW_MODES),
   body('status').optional().isIn(INTERVIEW_STATUSES),
   body('location').optional({ nullable: true }).isString().isLength({ max: 255 }),
-  body('meetingUrl').optional({ nullable: true }).isString().isLength({ max: 255 }),
+  optionalUrl('meetingUrl'),
   body('note').optional({ nullable: true }).isString().isLength({ max: 1000 }),
 ];
 
