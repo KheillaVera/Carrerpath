@@ -403,7 +403,7 @@ async function unsaveJob(userId, jobId) {
 async function recordSearch({ userId = null, query = null, filters = {}, resultsCount = 0 }) {
   try {
     await db.query(
-      'INSERT INTO job_searches (user_id, query, filters, results_count) VALUES (?, ?, CAST(? AS JSON), ?)',
+      'INSERT INTO job_searches (user_id, query, filters, results_count) VALUES (?, ?, ?, ?)',
       [userId, query || null, JSON.stringify(filters || {}), resultsCount]
     );
   } catch (_err) {

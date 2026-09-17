@@ -13,6 +13,8 @@ import Modal from '../../components/Modal';
 import Avatar from '../../components/Avatar';
 import StatusPill from '../../components/StatusPill';
 import { SkeletonTable } from '../../components/Skeleton';
+import MatchBreakdown from '../../components/MatchBreakdown';
+import { MatchBadge } from '../../components/MatchScore';
 import { safeUrl } from '../../services/url';
 
 const EMPLOYER_STATUSES = [
@@ -287,8 +289,11 @@ export default function ApplicantsPage() {
   const openEvidence = async (application) => {
     setEvidence({ loading: true, application });
     try {
-      const { data } = await api.get(`/applications/${application.id}/evidence`);
-      setEvidence({ loading: false, application, data });
+      const [{ data }, matchRes] = await Promise.all([
+        api.get(`/applications/${application.id}/evidence`),
+        api.get(`/applications/${application.id}/match`).catch(() => null),
+      ]);
+      setEvidence({ loading: false, application, data, match: matchRes?.data?.match || null });
     } catch (err) {
       toast.error('Could not load evidence', err.message);
       setEvidence(null);
@@ -420,7 +425,16 @@ export default function ApplicantsPage() {
             <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> Loading evidence…
           </div>
         )}
-        {evidence?.data && <EvidencePanel data={evidence.data} />}
+        {evidence?.data && (
+          <div className="space-y-7">
+            {evidence.match && (
+              <section className="rounded-lg border border-line bg-elevated/40 p-4">
+                <MatchBreakdown match={evidence.match} showActions={false} />
+              </section>
+            )}
+            <EvidencePanel data={evidence.data} />
+          </div>
+        )}
       </Modal>
 
       <Modal

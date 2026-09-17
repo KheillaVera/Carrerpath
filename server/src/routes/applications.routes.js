@@ -7,6 +7,7 @@ const {
 } = require('../validators/applicationsValidators');
 const applicationsController = require('../controllers/applicationsController');
 const interviewsController = require('../controllers/interviewsController');
+const matchingController = require('../controllers/matchingController');
 const { idParam } = require('../validators/common');
 
 const router = express.Router();
@@ -21,6 +22,7 @@ router.patch('/:id/withdraw', idParam('id'), validate, applicationsController.wi
 // Employer side.
 router.get('/employer', requirePermission('applications.review'), applicationsController.listForEmployer);
 router.get('/employer/stats', requirePermission('applications.review'), applicationsController.stats);
+router.get('/:id/match', idParam('id'), validate, requirePermission('applications.review'), matchingController.matchForApplication);
 router.get('/:id/evidence', idParam('id'), validate, requirePermission('applications.review'), applicationsController.getEvidence);
 router.patch('/:id/status', idParam('id'), requirePermission('applications.review'), applicationStatusValidator, validate, applicationsController.setStatus);
 router.post('/:id/interviews', idParam('id'), requirePermission('applications.review'), scheduleInterviewValidator, validate, interviewsController.schedule);

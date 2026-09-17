@@ -12,6 +12,8 @@ import Modal from '../components/Modal';
 import Avatar from '../components/Avatar';
 import StatusPill from '../components/StatusPill';
 import Skeleton, { SkeletonText } from '../components/Skeleton';
+import MatchScore from '../components/MatchScore';
+import MatchBreakdown from '../components/MatchBreakdown';
 
 const OPPORTUNITY_LABELS = {
   job: 'Job', internship: 'Internship', apprenticeship: 'Apprenticeship', volunteer: 'Volunteer',
@@ -68,6 +70,8 @@ export default function JobDetailPage() {
   const [coverLetter, setCoverLetter] = useState('');
   const [applying, setApplying] = useState(false);
   const [applyError, setApplyError] = useState(null);
+  const [match, setMatch] = useState(null);
+  const [matchOpen, setMatchOpen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -76,6 +80,12 @@ export default function JobDetailPage() {
         setLoading(true);
         const { data } = await api.get(`/jobs/${id}`);
         if (!cancelled) setJob(data.job);
+        if (isAuthenticated) {
+          // A missing match is not an error — employers and admins have no profile to score.
+          api.get(`/jobs/${id}/match`)
+            .then(({ data: m }) => { if (!cancelled) setMatch(m.match); })
+            .catch(() => {});
+        }
       } catch (err) {
         if (!cancelled) setError(err.message);
       } finally {
@@ -83,7 +93,7 @@ export default function JobDetailPage() {
       }
     })();
     return () => { cancelled = true; };
-  }, [id]);
+  }, [id, isAuthenticated]);
 
   const submitApplication = async (event) => {
     event.preventDefault();
@@ -130,6 +140,33 @@ export default function JobDetailPage() {
   const salaryShown = job.salaryVisible && (job.salaryMin || job.salaryMax);
   const required = (job.requiredSkills || []).filter((s) => s.importance === 'required');
   const preferred = (job.requiredSkills || []).filter((s) => s.importance === 'preferred');
+
+  const matchPanel = match && (
+    <div className="card mb-4 overflow-hidden">
+      <div className="p-5">
+        <div className="flex items-center gap-4">
+          <MatchScore score={match.score} band={match.band} size="md" />
+          <div className="min-w-0">
+            <div className="section-label">Your match</div>
+            <p className="mt-1 text-xs text-muted text-pretty">{match.summary}</p>
+          </div>
+        </div>
+        <button className="btn-secondary btn-sm mt-4 w-full" onClick={() => setMatchOpen(true)}>
+          See why — full breakdown
+        </button>
+      </div>
+      {match.gaps?.length > 0 && (
+        <div className="border-t border-line bg-elevated/40 px-5 py-3">
+          <div className="text-2xs uppercase tracking-[0.08em] text-faint">To close the gap</div>
+          <ul className="mt-1.5 space-y-0.5">
+            {match.gaps.slice(0, 2).map((gap) => (
+              <li key={gap.skillId} className="text-xs text-ink-soft">{gap.action}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
 
   const applyPanel = (
     <div className="card overflow-hidden">
@@ -299,9 +336,19 @@ export default function JobDetailPage() {
 
         {/* Sticky on desktop, inline underneath on smaller screens. */}
         <aside className="mt-8 lg:mt-0">
-          <div className="lg:sticky lg:top-24">{applyPanel}</div>
+          <div className="lg:sticky lg:top-24">{matchPanel}{applyPanel}</div>
         </aside>
       </div>
+
+      <Modal
+        open={matchOpen}
+        onClose={() => setMatchOpen(false)}
+        size="lg"
+        title="Why this score"
+        description={match ? `${job.title} at ${job.companyName}` : ''}
+      >
+        {match && <MatchBreakdown match={match} />}
+      </Modal>
 
       <Modal
         open={applyOpen}

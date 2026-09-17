@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 const bcrypt = require('bcryptjs');
 const db = require('../config/db');
+const { seedAssessments } = require('./seeds/assessments');
+const { seedJobSeekerDemo } = require('./seeds/jobSeeker');
 const env = require('../config/env');
 
 const ROLES = [
@@ -290,6 +292,9 @@ async function run() {
     await upsertDemoUsers(conn);
     await seedSkillCatalogue(conn);
     await seedEmployerDemo(conn);
+    await seedJobSeekerDemo(conn);
+    const assessmentCount = await seedAssessments(conn);
+    if (assessmentCount) console.log(`[db] seeded ${assessmentCount} skill assessments.`);
   });
   console.log('[db] seed complete. Demo accounts (DEMONSTRATION DATA ONLY):');
   console.log('       email                  password   role');

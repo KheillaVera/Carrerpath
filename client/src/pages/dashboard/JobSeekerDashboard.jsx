@@ -8,6 +8,7 @@ import StatTile from '../../components/StatTile';
 import StatusPill from '../../components/StatusPill';
 import Avatar from '../../components/Avatar';
 import { SkeletonStats } from '../../components/Skeleton';
+import { MatchBadge } from '../../components/MatchScore';
 
 /** Profile completeness, computed from what the seeker has actually filled in. */
 function completeness({ skills, projects, education, experience }) {
@@ -36,7 +37,7 @@ export default function JobSeekerDashboard() {
           api.get('/profile/education'),
           api.get('/profile/experience'),
           api.get('/applications/mine'),
-          api.get('/jobs', { params: { limit: 4 } }),
+          api.get('/jobs/recommended', { params: { limit: 4 } }),
         ]);
         if (cancelled) return;
         setData({
@@ -45,7 +46,7 @@ export default function JobSeekerDashboard() {
           education: education.data.education || [],
           experience: experience.data.experience || [],
           applications: applications.data.applications || [],
-          jobs: jobs.data.jobs || [],
+          jobs: jobs.data.matches || [],
         });
       } catch (err) {
         if (!cancelled) setError(err.message);
@@ -117,18 +118,17 @@ export default function JobSeekerDashboard() {
           ) : (
             <ul className="divide-y divide-line">
               {data.jobs.map((job) => (
-                <li key={job.id}>
+                <li key={job.jobId}>
                   <Link
-                    to={`/jobs/${job.id}`}
+                    to={`/jobs/${job.jobId}`}
                     className="flex items-center gap-3 px-5 py-3.5 transition-colors duration-120 hover:bg-elevated/60"
                   >
                     <Avatar name={job.companyName} size="sm" />
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate text-sm font-medium text-ink">{job.title}</span>
-                      <span className="mt-0.5 block truncate text-xs text-muted">
-                        {job.companyName}{job.location ? ` · ${job.location}` : ''}
-                      </span>
+                      <span className="block truncate text-sm font-medium text-ink">{job.jobTitle}</span>
+                      <span className="mt-0.5 block truncate text-xs text-muted">{job.companyName}</span>
                     </span>
+                    <MatchBadge score={job.score} band={job.band} />
                     <ArrowRight className="h-3.5 w-3.5 shrink-0 text-faint" aria-hidden />
                   </Link>
                 </li>

@@ -5,6 +5,7 @@ const validate = require('../middleware/validate');
 const { requireRole } = require('../middleware/authorize');
 const { createJobValidator, updateJobValidator, jobStatusValidator } = require('../validators/jobsValidators');
 const jobsController = require('../controllers/jobsController');
+const matchingController = require('../controllers/matchingController');
 const { idParam } = require('../validators/common');
 
 const router = express.Router();
@@ -19,6 +20,10 @@ router.get('/mine/:id', authenticate, idParam('id'), validate, jobsController.ge
 
 // Saved opportunities (job seekers).
 router.get('/saved', authenticate, jobsController.listSaved);
+
+// Transparent match score for the signed-in candidate.
+router.get('/recommended', authenticate, matchingController.recommended);
+router.get('/:id/match', authenticate, idParam('id'), validate, matchingController.matchForJob);
 
 router.post('/', authenticate, requireRole('employer', 'admin'), createJobValidator, validate, jobsController.create);
 router.patch('/:id', authenticate, idParam('id'), updateJobValidator, validate, jobsController.update);

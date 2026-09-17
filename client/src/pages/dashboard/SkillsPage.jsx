@@ -5,6 +5,7 @@ import PageHeader from '../../components/PageHeader';
 import EmptyState from '../../components/EmptyState';
 import { useToast } from '../../components/Toast';
 import { SkeletonCards } from '../../components/Skeleton';
+import { BadgeCheck } from 'lucide-react';
 import ErrorAlert from '../../components/ErrorAlert';
 
 const LEVELS = [
@@ -112,10 +113,25 @@ export default function SkillsPage() {
           <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
             {mySkills.map((s) => (
               <li key={s.id} className="flex items-center justify-between rounded-md border border-line px-3 py-2">
-                <div>
-                  <div className="text-sm font-medium">{s.name}</div>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <span className="truncate text-sm font-medium text-ink">{s.name}</span>
+                    {s.verifiedLevel && (
+                      <BadgeCheck
+                        className="h-3.5 w-3.5 shrink-0 text-success"
+                        aria-label={`Verified at ${s.verifiedLevel} level`}
+                      />
+                    )}
+                  </div>
                   <div className="text-xs text-muted">
-                    {s.categoryName || 'Uncategorised'} · <span className="capitalize">{s.selfLevel}</span>
+                    {s.categoryName || 'Uncategorised'} ·{' '}
+                    {s.verifiedLevel ? (
+                      <span className="text-success">
+                        verified <span className="capitalize">{s.verifiedLevel}</span> ({s.verifiedScore}%)
+                      </span>
+                    ) : (
+                      <span className="capitalize">{s.selfLevel}</span>
+                    )}
                   </div>
                 </div>
                 <button className="btn-ghost p-1 text-muted hover:text-danger" onClick={() => removeSkill(s.id)} aria-label={`Remove ${s.name}`}>

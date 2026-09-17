@@ -34,6 +34,8 @@ async function listUserSkills(userId) {
   return db.query(
     `SELECT us.skill_id AS id, s.name, sc.code AS category, sc.name AS categoryName,
             us.self_level AS selfLevel, us.years_experience AS yearsExperience, us.notes,
+            us.verified_level AS verifiedLevel, us.verified_score AS verifiedScore,
+            us.verified_at AS verifiedAt,
             us.created_at AS createdAt
      FROM user_skills us
      JOIN skills s ON s.id = us.skill_id

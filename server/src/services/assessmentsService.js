@@ -211,7 +211,7 @@ async function submitAttempt(userId, attemptId, answers) {
     for (const answer of graded) {
       await conn.query(
         `INSERT INTO assessment_answers (attempt_id, question_id, selected_option_ids, is_correct, points_awarded)
-         VALUES (?, ?, CAST(? AS JSON), ?, ?)
+         VALUES (?, ?, ?, ?, ?)
          ON DUPLICATE KEY UPDATE selected_option_ids = VALUES(selected_option_ids),
                                  is_correct = VALUES(is_correct),
                                  points_awarded = VALUES(points_awarded)`,

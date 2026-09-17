@@ -3,7 +3,7 @@ import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-do
 import {
   LayoutDashboard, User, Award, FolderKanban, GraduationCap, Briefcase, Search,
   FileText, Compass, BookOpen, Bell, LogOut, Menu, X, BadgeCheck,
-  Building2, Users, ClipboardList, ShieldCheck, BarChart3, ChevronDown, ExternalLink,
+  Building2, Users, ClipboardList, ClipboardCheck, ShieldCheck, BarChart3, ChevronDown, ExternalLink,
 } from 'lucide-react';
 import Logo from '../components/Logo';
 import Avatar from '../components/Avatar';
@@ -27,6 +27,7 @@ const seekerNav = [
       { to: '/app/education', label: 'Education', icon: GraduationCap },
       { to: '/app/experience', label: 'Experience', icon: Briefcase },
       { to: '/app/certifications', label: 'Certifications', icon: BadgeCheck },
+      { to: '/app/assessments', label: 'Assessments', icon: ClipboardCheck },
     ],
   },
   {

@@ -19,6 +19,7 @@ import ProjectsPage from './pages/dashboard/ProjectsPage';
 import EducationPage from './pages/dashboard/EducationPage';
 import ExperiencePage from './pages/dashboard/ExperiencePage';
 import CertificationsPage from './pages/dashboard/CertificationsPage';
+import AssessmentsPage from './pages/dashboard/AssessmentsPage';
 import CompanyProfilePage from './pages/dashboard/CompanyProfilePage';
 import JobPostingsPage from './pages/dashboard/JobPostingsPage';
 import EmployerVerificationPage from './pages/dashboard/EmployerVerificationPage';
@@ -62,6 +63,7 @@ export default function App() {
         <Route path="education" element={<EducationPage />} />
         <Route path="experience" element={<ExperiencePage />} />
         <Route path="certifications" element={<CertificationsPage />} />
+        <Route path="assessments" element={<AssessmentsPage />} />
         <Route path="jobs" element={<JobsPage embedded />} />
         <Route path="applications" element={<MyApplicationsPage />} />
         <Route path="roadmap" element={<ComingSoonPage title="Career roadmap" message="Personal roadmap arrives in Phase 8." />} />

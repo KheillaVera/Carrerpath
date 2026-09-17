@@ -13,6 +13,7 @@ import Modal from '../components/Modal';
 import Avatar from '../components/Avatar';
 import Segmented from '../components/Segmented';
 import { SkeletonCards } from '../components/Skeleton';
+import { MatchBadge } from '../components/MatchScore';
 
 const OPPORTUNITY_LABELS = {
   job: 'Job',
@@ -65,7 +66,7 @@ function daysLeft(deadline) {
   return null;
 }
 
-function JobCard({ job, onToggleSave, canSave, busy }) {
+function JobCard({ job, onToggleSave, canSave, busy, match }) {
   const salary = formatSalary(job);
   const verified = job.companyVerificationStatus === 'verified';
   const urgent = daysLeft(job.applicationDeadline);
@@ -86,6 +87,7 @@ function JobCard({ job, onToggleSave, canSave, busy }) {
               </h3>
               <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted">
                 <span className="font-medium text-ink-soft">{job.companyName}</span>
+                {match && <MatchBadge score={match.score} band={match.band} />}
                 {verified && (
                   <span className="inline-flex items-center gap-1 text-success">
                     <ShieldCheck className="h-3 w-3" aria-hidden /> Verified
@@ -258,6 +260,7 @@ export default function JobsPage({ fixedType = null, embedded = false, title, de
   const [busyId, setBusyId] = useState(null);
   const [savedOnly, setSavedOnly] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [matches, setMatches] = useState({});
 
   const [query, setQuery] = useState('');
   const [filters, setFilters] = useState({ ...EMPTY_FILTERS, opportunityType: fixedType || '' });
@@ -265,6 +268,16 @@ export default function JobsPage({ fixedType = null, embedded = false, title, de
   useEffect(() => {
     api.get('/jobs/filters').then(({ data }) => setFacets(data)).catch(() => setFacets(null));
   }, []);
+
+  // Match scores are per candidate, so they are fetched once and looked up by job.
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    api.get('/jobs/recommended', { params: { limit: 24 } })
+      .then(({ data }) => {
+        setMatches(Object.fromEntries((data.matches || []).map((m) => [m.jobId, m])));
+      })
+      .catch(() => setMatches({}));
+  }, [isAuthenticated]);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -445,6 +458,7 @@ export default function JobsPage({ fixedType = null, embedded = false, title, de
                       canSave={isAuthenticated}
                       busy={busyId === job.id}
                       onToggleSave={toggleSave}
+                      match={matches[job.id]}
                     />
                   ))}
                 </ul>
