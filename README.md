@@ -59,40 +59,37 @@ the intended module layout.
 
 ### Requirements
 
-- Node.js 18+ (developed with Node 24) and npm 10+.
-- MySQL 8.x running locally (or reachable over the network).
+- Node.js 22+ (developed with Node 24) and npm 10+. SQLite is built into Node, so
+  local development needs nothing else installed.
+- MySQL 8.x only for production, or if you set `DB_CLIENT=mysql` locally.
 
-### 1. Configure the server
-
-```bash
-cd server
-cp .env.example .env    # then edit DB credentials and JWT secret
-npm install
-```
-
-### 2. Create the database and seed demo data
+### 1. Install dependencies
 
 ```bash
-npm run db:migrate      # creates the database and all migrated tables
-npm run db:seed         # inserts roles, permissions, skills and demo accounts
-# or reset everything:  npm run db:reset
+npm run setup          # installs both server and client
 ```
 
-The default database name is `pathaura`. If you migrated before the project was renamed, your
-data still lives in the old `rwanda_skills_jobs` schema — either set `DB_NAME=rwanda_skills_jobs`
-in your `.env` to keep it, or re-run the commands above to build a fresh `pathaura` schema.
+### 2. Create the database
 
-Demo accounts (**demonstration data only** — never use in production). Re-running the seed
-resets these accounts back to a known-good password, so if you ever get locked out, run
-`npm run db:seed` again:
+Local development uses **SQLite**, which runs inside the API process — there is no
+database server to install or start, and nothing for the operating system to kill when
+memory is tight. The file lives at `server/data/pathaura.sqlite` and is gitignored.
 
-| Role          | Email               | Password   |
-| ------------- | ------------------- | ---------- |
-| Job seeker    | `seeker@demo.rw`    | `Demo1234` |
-| Employer      | `employer@demo.rw`  | `Demo1234` |
-| Administrator | `admin@demo.rw`     | `Demo1234` |
+```bash
+cp server/.env.example server/.env   # then set a JWT secret
+npm run db:migrate                   # creates the schema
+npm run db:seed                      # roles, permissions, skills, assessments, demo accounts
+npm run db:reset                     # or wipe and rebuild in one step
+```
 
-### 3. Run the server
+**Production uses MySQL.** Set `DB_CLIENT=mysql` in `.env` along with the `DB_HOST`
+settings, and the same commands apply the migrations in
+`server/src/database/migrations/`. Application code never branches on the database:
+`server/src/config/db.js` selects a driver and both expose the same interface, with
+`server/src/config/db/sqlDialect.js` translating the MySQL dialect the queries are
+written in.
+
+### 3. Run the API
 
 ```bash
 npm run dev             # nodemon on http://localhost:4000
@@ -100,7 +97,7 @@ npm run dev             # nodemon on http://localhost:4000
 
 Health check: `GET http://localhost:4000/api/health`.
 
-### 4. Configure and run the client
+### 4. Run the web app
 
 ```bash
 cd ../client

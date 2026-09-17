@@ -2,10 +2,9 @@
   "name": "pathaura",
   "version": "0.1.0",
   "private": true,
-  "description": "PathAura — from learning a skill to getting work. Run every part of the project from here.",
+  "description": "PathAura \u2014 from learning a skill to getting work. Run every part of the project from here.",
   "scripts": {
     "setup": "npm --prefix server install && npm --prefix client install",
-    "db": "npm --prefix server run db:start",
     "api": "npm --prefix server start",
     "api:watch": "npm --prefix server run dev",
     "web": "npm --prefix client run dev",
@@ -15,7 +14,8 @@
     "build": "npm --prefix client run build",
     "test": "npm --prefix server run test:security",
     "test:security": "npm --prefix server run test:security",
-    "test:smoke": "npm --prefix server run test:smoke"
+    "test:smoke": "npm --prefix server run test:smoke",
+    "db:mysql": "npm --prefix server run db:start"
   },
   "workspaces": [],
   "engines": {

@@ -28,11 +28,18 @@ const env = {
   clientOrigin: process.env.CLIENT_ORIGIN || 'http://localhost:5173',
 
   db: {
+    // 'sqlite' runs the database inside this process — nothing to install or
+    // start locally. 'mysql' is the production path.
+    client: (process.env.DB_CLIENT || 'sqlite').toLowerCase(),
+    // Only used by the sqlite client.
+    file: process.env.DB_FILE
+      ? path.resolve(__dirname, '../../', process.env.DB_FILE)
+      : path.resolve(__dirname, '../../data/pathaura.sqlite'),
     host: process.env.DB_HOST || '127.0.0.1',
     port: int('DB_PORT', 3306),
-    user: required('DB_USER', 'root'),
+    user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD ?? '',
-    database: required('DB_NAME', 'pathaura'),
+    database: process.env.DB_NAME || 'pathaura',
   },
 
   jwt: {

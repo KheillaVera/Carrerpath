@@ -5,9 +5,13 @@ const db = require('./config/db');
 async function start() {
   try {
     await db.ping();
-    console.log(`[db] connected to ${env.db.host}:${env.db.port}/${env.db.database}`);
+    console.log(`[db] connected to ${db.describe()}`);
   } catch (err) {
-    console.error('[db] connection failed. Check .env and that MySQL is running.');
+    console.error(
+      env.db.client === 'sqlite'
+        ? `[db] could not open the local database at ${env.db.file}. Run: npm run db:migrate`
+        : '[db] connection failed. Check .env and that MySQL is running.'
+    );
     console.error(err.message);
     process.exit(1);
   }

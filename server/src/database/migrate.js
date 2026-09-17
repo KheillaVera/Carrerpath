@@ -48,7 +48,35 @@ async function ensureDatabase() {
   }
 }
 
+async function runSqlite() {
+  const env = require('../config/env');
+  const db = require('../config/db');
+  const schemaPath = path.join(__dirname, 'sqlite-schema.sql');
+
+  if (RESET && env.db.file !== ':memory:' && fs.existsSync(env.db.file)) {
+    console.log(`[db] removing ${env.db.file}`);
+    // Drop the whole file, along with the write-ahead log beside it.
+    await db.pool.end();
+    for (const suffix of ['', '-wal', '-shm']) {
+      try { fs.unlinkSync(env.db.file + suffix); } catch (_) { /* not present */ }
+    }
+    // Reload the module so a fresh handle opens the recreated file.
+    delete require.cache[require.resolve('../config/db')];
+    delete require.cache[require.resolve('../config/db/sqliteDriver')];
+  }
+
+  const fresh = require('../config/db');
+  fresh.exec(fs.readFileSync(schemaPath, 'utf8'));
+  fresh.exec(
+    "INSERT OR IGNORE INTO schema_migrations (filename) VALUES ('sqlite-schema.sql')"
+  );
+  console.log(`[db] sqlite schema applied to ${env.db.file}`);
+  console.log('[db] migrations done.');
+  await fresh.pool.end();
+}
+
 async function run() {
+  if (require('../config/env').db.client === 'sqlite') return runSqlite();
   await ensureDatabase();
 
   const conn = await mysql.createConnection({
