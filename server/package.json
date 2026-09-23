@@ -13,7 +13,9 @@
     "db:seed": "node src/database/seed.js",
     "db:reset": "node src/database/migrate.js --reset && node src/database/seed.js",
     "test:smoke": "node tests/smoke.js",
-    "test:security": "node tests/security.js"
+    "test:security": "node tests/security.js",
+    "db:seed:demo": "node src/database/seed.js --demo",
+    "db:reset:demo": "node src/database/migrate.js --reset && node src/database/seed.js --demo"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

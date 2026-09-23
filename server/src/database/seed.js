@@ -284,23 +284,44 @@ async function seedEmployerDemo(conn) {
   }
 }
 
+/**
+ * Reference data is what the product needs to function: roles, permissions, the
+ * skills catalogue and the assessments built on it. It is always seeded.
+ *
+ * Demonstration accounts, a fake employer and sample postings are seeded only
+ * with --demo. A real deployment (and a real local run) starts with no users and
+ * no postings: people register themselves and employers post their own work.
+ */
 async function run() {
+  const withDemo = process.argv.includes('--demo');
+
   await db.withTransaction(async (conn) => {
     await upsertRoles(conn);
     await upsertPermissions(conn);
     await linkRolePermissions(conn);
-    await upsertDemoUsers(conn);
     await seedSkillCatalogue(conn);
-    await seedEmployerDemo(conn);
-    await seedJobSeekerDemo(conn);
     const assessmentCount = await seedAssessments(conn);
-    if (assessmentCount) console.log(`[db] seeded ${assessmentCount} skill assessments.`);
+    if (assessmentCount) console.log('[db] seeded ' + assessmentCount + ' skill assessments.');
+
+    if (withDemo) {
+      await upsertDemoUsers(conn);
+      await seedEmployerDemo(conn);
+      await seedJobSeekerDemo(conn);
+    }
   });
-  console.log('[db] seed complete. Demo accounts (DEMONSTRATION DATA ONLY):');
-  console.log('       email                  password   role');
-  for (const u of DEMO_USERS) {
-    console.log(`       ${u.email.padEnd(22)} ${u.password.padEnd(10)} ${u.role}`);
+
+  if (withDemo) {
+    console.log('[db] seed complete. Demo accounts (DEMONSTRATION DATA ONLY):');
+    console.log('       email                  password   role');
+    for (const u of DEMO_USERS) {
+      console.log('       ' + u.email.padEnd(22) + ' ' + u.password.padEnd(10) + ' ' + u.role);
+    }
+  } else {
+    console.log('[db] seed complete: roles, permissions, skills catalogue and assessments.');
+    console.log('[db] no accounts and no postings were created - register your own at /register.');
+    console.log('[db] to include the demonstration accounts instead, run: npm run db:reset:demo');
   }
+
   await db.pool.end();
 }
 
