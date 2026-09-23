@@ -2,8 +2,11 @@
   "name": "pathaura",
   "version": "0.1.0",
   "private": true,
-  "description": "PathAura \u2014 from learning a skill to getting work. Run every part of the project from here.",
+  "description": "PathAura — from learning a skill to getting work. Run every part of the project from here.",
   "scripts": {
+    "start": "node scripts/dev.js",
+    "dev": "node scripts/dev.js",
+    "stop": "node scripts/stop.js",
     "setup": "npm --prefix server install && npm --prefix client install",
     "api": "npm --prefix server start",
     "api:watch": "npm --prefix server run dev",

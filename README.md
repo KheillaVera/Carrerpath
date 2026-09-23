@@ -6,7 +6,7 @@ A digital platform that helps students, graduates and skilled youth in Rwanda mo
 learning skills into internships, jobs and career development opportunities — while giving
 employers structured evidence of what candidates can actually do.
 
-**This repository is currently at the end of Phase 5 (Applications).** See "Roadmap" below.
+**This repository is currently at the end of Phase 7 (Matching engine).** See "Roadmap" below.
 
 ---
 
@@ -63,13 +63,13 @@ the intended module layout.
   local development needs nothing else installed.
 - MySQL 8.x only for production, or if you set `DB_CLIENT=mysql` locally.
 
-### 1. Install dependencies
+### 1. Install dependencies (once)
 
 ```bash
 npm run setup          # installs both server and client
 ```
 
-### 2. Create the database
+### 2. Create the database (once)
 
 Local development uses **SQLite**, which runs inside the API process — there is no
 database server to install or start, and nothing for the operating system to kill when
@@ -77,10 +77,29 @@ memory is tight. The file lives at `server/data/pathaura.sqlite` and is gitignor
 
 ```bash
 cp server/.env.example server/.env   # then set a JWT secret
-npm run db:migrate                   # creates the schema
-npm run db:seed                      # roles, permissions, skills, assessments, demo accounts
-npm run db:reset                     # or wipe and rebuild in one step
+npm run db:reset                     # creates the schema and seeds demo data
 ```
+
+### 3. Run the whole platform
+
+```bash
+npm start
+```
+
+That one command starts the API and the web app together, labels their output
+(`api |` / `web |`), and stops both on Ctrl+C. On Windows you can also double-click
+`start.cmd` in the project root.
+
+Then open **http://localhost:5173**.
+
+| Email | Password | Role |
+| --- | --- | --- |
+| `seeker@demo.rw` | `Demo1234` | Job seeker |
+| `employer@demo.rw` | `Demo1234` | Employer |
+| `admin@demo.rw` | `Demo1234` | Administrator |
+
+If a previous run was closed abruptly and a port is still held, `npm run stop` frees
+ports 4000 and 5173. To run only one side, `npm run api` and `npm run web` still work.
 
 **Production uses MySQL.** Set `DB_CLIENT=mysql` in `.env` along with the `DB_HOST`
 settings, and the same commands apply the migrations in
@@ -88,26 +107,6 @@ settings, and the same commands apply the migrations in
 `server/src/config/db.js` selects a driver and both expose the same interface, with
 `server/src/config/db/sqlDialect.js` translating the MySQL dialect the queries are
 written in.
-
-### 3. Run the API
-
-```bash
-npm run dev             # nodemon on http://localhost:4000
-```
-
-Health check: `GET http://localhost:4000/api/health`.
-
-### 4. Run the web app
-
-```bash
-cd ../client
-cp .env.example .env    # optional — defaults work with Vite's proxy
-npm install
-npm run dev             # http://localhost:5173
-```
-
-The Vite dev server proxies `/api/*` to `http://localhost:4000`, so you can leave
-`VITE_API_BASE_URL` at its default.
 
 ## Design system
 
@@ -157,7 +156,7 @@ pairs checked for contrast in both themes.
 **When writing new UI**, compose the tokens and components above instead of styling a page directly —
 that is what keeps both themes correct and the product coherent.
 
-## API surface (Phases 1–5)
+## API surface (Phases 1–7)
 
 | Method | Path | Description | Auth |
 | --- | --- | --- | --- |
@@ -262,9 +261,9 @@ The build follows the 15 phases from the product specification:
 3. **Employers — done.** Company profiles with public pages, admin verification queue, job/internship postings with required skills.
 4. **Marketplace — done.** Public search with filters, sorting and facets, posting detail pages, saved opportunities.
 5. **Applications — done.** Apply with a cover letter, status timeline, withdrawal, employer applicant dashboard with skills evidence, interview scheduling.
-6. Skill assessments.
-7. Matching engine (§22–23 of the spec).
-8. Career roadmap.
+6. **Skill assessments — done.** Question banks per skill, timed attempts, scoring and verified skill levels.
+7. **Matching engine — done.** Transparent weighted scores between a profile and an opportunity, with matched skills, gaps and recommendations.
+8. Career roadmap. **← next**
 9. Training providers + mentors.
 10. Notifications.
 11. Analytics + employment outcome tracking.
